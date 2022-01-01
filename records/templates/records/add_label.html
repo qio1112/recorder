@@ -1,0 +1,30 @@
+{% extends 'records_base.html' %}
+{% load static %}
+
+{% block title %}
+    Add New Label
+{% endblock %}
+
+{% block css_files %}
+      <link rel="stylesheet" href="{% static "records/index.css" %}" />
+{% endblock %}
+
+{% block content %}
+    <div class="content">
+        <h4>Add New Label</h4>
+        {% if succeeded%}
+            <p>New Label Added!</p>
+        {% endif %}
+        <form action="{% url 'add-label' %}" method="POST">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-row {% if field.errors %}error-message{% endif %}">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {{ field.errors }}
+                </div>
+            {% endfor %}
+            <input class="button-1" type="submit" value="Submit">
+        </form>
+    </div>
+{% endblock %}

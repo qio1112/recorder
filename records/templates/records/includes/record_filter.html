@@ -1,0 +1,5 @@
+<form action="{% url 'records' %}" method="POST" class="filter">
+    {% csrf_token %}
+    {{ records_filter_query }}
+    <input type="submit" value="Submit">
+</form>

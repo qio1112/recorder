@@ -1,0 +1,26 @@
+<article class="record-list-item tall-list-item">
+    <a href="{% url "record-detail" record.id %}">
+      <div class="post__content">
+        <h4>{{ record.title }}</h4>
+        <p>
+            <span>Labels: </span>
+            {% for label in record.labels.all|slice:"0:4" %}
+                <span class="label-name">{{ label }}</span>
+            {% endfor %}
+            {% if record.labels.all.count > 4 %}
+                <span>and more..</span>
+            {% endif %}
+        </p>
+        <p>Created By: {{ record.created_by.user_name }}</p>
+        <p>Created On: {{ record.created_date|date:"Y-m-d H:i:s" }}</p>
+        <p>Last Modified On: {{ record.last_modified_date|date:"Y-m-d H:i:s" }}</p>
+      </div>
+      <div>
+        {% if record.pictures.all %}
+            {% for picture in record.pictures.all|slice:"0:2" %}
+                <img class="small-img" src="{{ picture.picture.url }}" alt="{{ record.title }}"/>
+            {% endfor %}
+        {% endif %}
+      </div>
+    </a>
+</article>

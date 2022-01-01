@@ -1,0 +1,38 @@
+{% extends "records_base.html" %}
+{% load static %}
+
+{% block title %}
+    Records
+{% endblock %}
+
+{% block css_files %}
+      <link rel="stylesheet" href="{% static "records/index.css" %}" />
+{% endblock %}
+
+{% block content %}
+    <div class="records-list tall_list_item">
+        <h2>Latest Created/Modified Records</h2>
+        <ul>
+            {% for record in latest_records %}
+            <li>
+                {% include 'records/includes/record_summary.html' %}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="records-list">
+        <h2>Records of Today</h2>
+        {% if today_records %}
+        <ul>
+            {% for record in today_records %}
+            <li>
+                {% include 'records/includes/record_summary.html' %}
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+            <h4>No Record to Show</h4>
+        {% endif %}
+    </div>
+{% endblock %}

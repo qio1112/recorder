@@ -1,0 +1,271 @@
+.record-list-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 18rem;
+}
+
+.record-list-item p {
+    font-size: 0.75rem;
+    color: darkgrey;
+}
+
+.records-list {
+  min-height: 30rem;
+  background-color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 60rem;
+  margin: 6rem auto 3rem auto;
+  box-shadow: 1px 1px 12px rgba(0, 0, 0, 0.4);
+}
+
+.tall-list-item a {
+    min-height: 18rem;
+}
+
+.short-list-item a {
+    min-height: 5rem;
+}
+
+.records-list a {
+  text-decoration: none;
+  color: black;
+  transition: all 0.2s ease;
+  padding: 1rem;
+  min-width: 15rem;
+  background-color: antiquewhite;
+  border-radius: 0.4rem;
+}
+
+.records-list a:hover,
+.records-list a:active {
+  transform: scale(1.1);
+  background-color: cadetblue;
+  color: white;
+}
+
+.small-img {
+  width: 7rem;
+  height: 5rem;
+  object-fit: cover;
+  border-radius: 10%;
+}
+
+.medium-img {
+  width: 10rem;
+  height: 7rem;
+  object-fit: cover;
+  border-radius: 10%;
+}
+
+.records-list h4 {
+  margin: 0.25rem 0;
+}
+
+.records-list ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.records-list li {
+  flex: 1;
+}
+
+.labels_list {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 60rem;
+  margin: 6rem auto 3rem auto;
+  box-shadow: 1px 1px 12px rgba(0, 0, 0, 0.4);
+}
+
+.pagination {
+  align-items: center;
+  text-align: center;
+}
+
+.pagination a {
+  background-color: cadetblue;
+  color: white;
+  padding: 0.3rem;
+  margin: 1rem;
+  border-radius: 3px;
+  text-decoration: None;
+}
+
+.filter {
+  margin: 6rem auto 0 auto;
+  padding: 1rem 6rem;
+  border-radius: 3px;
+  width: 60rem;
+  box-shadow: 1px 1px 12px rgba(0, 0, 0, 0.4);
+}
+
+.content {
+  min-height: 50rem;
+  background-color: white;
+  padding: 2rem 3rem;
+  border-radius: 12px;
+  width: 60rem;
+  margin: 6rem auto 3rem auto;
+  box-shadow: 1px 1px 12px rgba(0, 0, 0, 0.4);
+}
+
+.content img {
+  width: 60%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 5px;
+  margin: 0.1rem;
+}
+
+.content p {
+  font-size: 0.75rem;
+  color: darkgrey;
+}
+
+.content h2 {
+  align-items: center;
+  text-align: center;
+  font-size: 2rem;
+}
+
+.column-name {
+  font-size: 0.75rem;
+  color: black;
+  margin: 1rem 1rem 0 0;
+}
+
+.record-detail-content {
+  white-space: pre-wrap;
+  font-size: 0.9rem;
+  color: black;
+  padding: 0.4rem 0.2rem;
+  border: 2px solid darkgrey;
+  border-radius: 5px;
+  margin: 1.5rem 0;
+  word-break: break-all;
+  min-height: 5rem;
+}
+
+.label-name {
+  background-color: cadetblue;
+  color: antiquewhite;
+  margin: 0.1rem;
+  padding: 0.1rem;
+  border-radius: 0.25rem;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: row;
+}
+
+.button-1 {
+  font-size: 0.8rem;
+  background-color: cadetblue;
+  margin: 0.3rem;
+  padding: 0.3rem;
+  border-color: antiquewhite;
+  border-radius: 0.3rem;
+  width: 7rem;
+  transition: all 0.2s ease;
+  color: antiquewhite;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+}
+
+.button-1 a,button {
+  text-decoration: None;
+  color: antiquewhite;
+}
+
+.button-1:hover {
+  transform: scale(1.1);
+}
+
+.button-disabled {
+  font-size: 0.8rem;
+  background-color: darkgrey;
+  margin: 0.3rem;
+  padding: 0.3rem;
+  border-color: darkgrey;
+  border-radius: 0.3rem;
+  width: 7rem;
+  transition: all 0.2s ease;
+  color: antiquewhite;
+  align-items: center;
+  text-align: center;
+  cursor: not-allowed;
+}
+
+.button-disabled a,button {
+  text-decoration: None;
+  color: antiquewhite;
+  cursor: not-allowed;
+}
+
+.error-message {
+  color: red;
+}
+
+.error-message ul li {
+  list-style-type: none;
+  font-size: 0.7rem;
+  margin: 0;
+}
+
+.form-row {
+  display: flex;
+  font-size: 0.8rem;
+  margin: 1rem 0;
+}
+
+.form-row label {
+  display: inline-block;
+  min-width: 5rem;
+}
+
+.form-row img {
+  width: 30%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 10%;
+}
+
+.record-input input[type="text"]{
+  width: 30rem;
+}
+
+.record-input textarea{
+  width: 40rem;
+  height: 20rem;
+}
+
+input[type="checkbox"] {
+  /* ...existing styles */
+  display: grid;
+  place-content: center;
+}
+
+input[type="checkbox"]::before {
+  content: "";
+  width: 0.65em;
+  height: 0.65em;
+  transform: scale(0);
+  transition: 120ms transform ease-in-out;
+  box-shadow: inset 1em 1em cadetblue;
+}
+
+input[type="checkbox"]:checked::before {
+  transform: scale(1);
+}
+

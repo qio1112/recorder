@@ -1,0 +1,36 @@
+{% extends 'records_base.html' %}
+{% load static %}
+
+{% block css_files %}
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static "practice/calculator/calculator.css" %}" />
+{% endblock %}
+
+{% block js_scripts %}
+    <script src="{% static "practice/calculator/calculator_app.js" %}"></script>
+    <script src="{% static "practice/calculator/calculator.js" %}"></script>
+{% endblock %}
+
+{% block content %}
+    <header>
+      <h1>The Unconventional Calculator</h1>
+    </header>
+
+    <section id="calculator">
+      <input type="number" id="input-number" />
+      <div id="calc-actions">
+        <button type="button" id="btn-add">+</button>
+        <button type="button" id="btn-subtract">-</button>
+        <button type="button" id="btn-multiply">*</button>
+        <button type="button" id="btn-divide">/</button>
+      </div>
+    </section>
+    <section id="results">
+      <h2 id="current-calculation">0</h2>
+      <h2>Result: <span id="current-result">0</span></h2>
+    </section>
+  </body>
+{%  endblock %}

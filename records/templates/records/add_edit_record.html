@@ -1,0 +1,55 @@
+{% extends 'records_base.html' %}
+{% load static %}
+
+{% block title %}
+    {{ title }}
+{% endblock %}
+
+{% block css_files %}
+      <link rel="stylesheet" href="{% static "records/index.css" %}" />
+{% endblock %}
+
+{% block content %}
+    <div class="content">
+        <h4>{{ title }}</h4>
+        <form action=" {% if title == "Add New Record" %}
+                          {% url 'add-record' %}
+                       {% else %}
+                          {% url 'edit-record' record_id %}
+                       {% endif %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% for field in form %}
+                {% if "Content" in field.label_tag %}
+                    <div class="form-row record-input {% if field.errors %}error-message{% endif %}">
+                        {{ field }}
+                        {{ field.errors }}
+                    </div>
+                {% elif "Delete images" in field.label_tag %}
+                    {% if field.field.choices %}
+                        <div class="form-row record-input {% if field.errors %}error-message{% endif %}">
+                            {{ field.label_tag }}
+                            <ul>
+                                {% for image_id, image in field.field.choices %}
+                                    <li>
+                                        <input type="checkbox" name="delete_images" value="{{ image_id }}" id="{{ image.picture.name }}"/>
+                                        <label for="{{ image.picture.name }}">
+                                            <img class="medium-img" src="{{ image.picture.url }}" alt="{{ image.picture.name }}"/>
+                                        </label>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                            {{ field.errors }}
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="form-row record-input {% if field.errors %}error-message{% endif %}">
+                        {{ field.label_tag }}
+                        {{ field }}
+                        {{ field.errors }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <input class="button-1" type="submit" value="Submit">
+        </form>
+    </div>
+{% endblock %}

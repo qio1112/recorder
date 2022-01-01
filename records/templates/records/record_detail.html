@@ -1,0 +1,47 @@
+{% extends 'records_base.html' %}
+{% load static %}
+
+{% block title %}
+    {{ record.title }}
+{% endblock %}
+
+{% block css_files %}
+    <link rel="stylesheet" href="{% static "records/index.css" %}" />
+{% endblock %}
+
+{% block content %}
+    <div class="content">
+        <h2>{{ record.title }}</h2>
+        <p><span class="column-name">Created By  </span>{{ record.created_by }}</p>
+        <p><span class="column-name">Created At  </span>{{ record.created_date }}</p>
+        <p><span class="column-name">Modified At  </span>{{ record.last_modified_date }}</p>
+        <p>
+            <span class="column-name">Labels</span>
+            {% for label in record.labels.all %}
+                <span class="label-name">{{ label.name }}</span>
+            {% endfor %}
+        </p>
+        <div class="buttons">
+            <div class="{% if can_edit %} button-1 {% else %} button-disabled {% endif %}">
+                <a href={% url 'edit-record' record.id %}>Edit Record</a>
+            </div>
+            <div class="{% if can_edit %} button-1 {% else %} button-disabled {% endif %}">
+                <a href={% url 'delete-record' record.id %}>DELETE Record</a>
+            </div>
+
+{#            <form action="{% url "delete-record" %}" method="POST">#}
+{#                {% csrf_token %}#}
+{#                <input type="hidden" value="{{ record.id }}" name="record_id">#}
+{#                <button class="button-1" type="submit">Delete Record</button>#}
+{#            </form>#}
+        </div>
+        <article class="record-detail-content">{{ record.content }}</article>
+        <div>
+            {% if record.pictures.all %}
+                {% for picture in record.pictures.all %}
+                    <img src="{{ picture.picture.url }}" alt="{{ record.title }}"/>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

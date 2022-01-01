@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="{% static "user_auth.css" %}">
+</head>
+<body>
+    <form method="POST" action="">
+        {% csrf_token %}
+        <div>
+            {{ form.username.label }}
+            {{ form.username }}
+        </div>
+        <div>
+            <span>Email</span>
+            {{ form.email }}
+        </div>
+        <div>
+            <span>Password</span>
+            {{ form.password1 }}
+        </div>
+        <div>
+            <span>Confirm Password</span>
+            {{ form.password2 }}
+        </div>
+        <input type="submit" name="create-user"/>
+    </form>
+</body>
+</html>

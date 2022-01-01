@@ -1,0 +1,44 @@
+{% extends "records_base.html" %}
+{% load static %}
+
+{% block title %}
+    All-Records
+{% endblock %}
+
+{% block css_files %}
+    <link rel="stylesheet" href="{% static "records/index.css" %}" />
+{% endblock %}
+
+{% block content %}
+
+    {% include 'records/includes/record_filter.html' %}
+
+    <div class="records-list tall_list_item">
+        {% if not page_obj %}
+            <p>No records to show!</p>
+        {% endif %}
+        <ul>
+        {% for record in page_obj %}
+            <li>
+            {% include "records/includes/record_summary.html" %}
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </div>
+{% endblock %}

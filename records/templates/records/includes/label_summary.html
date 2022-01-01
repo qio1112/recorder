@@ -1,0 +1,17 @@
+{% load custom_tags %}
+
+<article class="record-list-item short-list-item">
+    <a href="{% url "records" %}?labels={{ label.name }}">
+        <div>
+            <h4>{{ label.name }}</h4>
+            <p>Created By: {{ label.created_by.user_name }}</p>
+            {#        <p>Created On: {{ label.created_date|date:"Y-m-d H:i:s" }}</p>#}
+            <p>Number of related records: {{ label.records.all.count }}</p>
+            <form action="{% url "delete-label" label.name%}" method="GET">
+                <input type="submit" value="Delete"
+                       class="{% if is_deletable|get_item:label %} button-1 {% else %} button-disabled {% endif %}"
+                       {% if not is_deletable|get_item:label %}disabled{% endif %}>
+            </form>
+        </div>
+    </a>
+</article>

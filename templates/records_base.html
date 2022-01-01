@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static "app.css" %}">
+    <link rel="icon" href="{% static "REC.png" %}">
+    {% block css_files %}{% endblock %}
+</head>
+<body>
+<header id="main-navigation">
+    <h1><a class="nav-h1" href="{% url "records-index-page" %}">REC</a></h1>
+    <nav>
+        <span class="vertical-center"><a class="nav-a" href="{% url "records" %}">Records</a></span>
+        <span class="vertical-center"><a class="nav-a" href="{% url "labels" %}">Labels</a></span>
+        <span class="vertical-center"><a class="nav-a" href="{% url "add-record" %}">Add Record</a></span>
+        <span class="vertical-center"><a class="nav-a" href="{% url "add-label" %}">Add Label</a></span>
+        <span class="vertical-center"><a class="nav-a" id="username" href=""><img id="user-icon" src="{{ request.user.shown_user.get.icon.url }}" alt="{{ request.user }}"/></a></span>
+        <span class="vertical-center"><a class="nav-a" id="logout" href="{% url "logout" %}">Logout</a></span>
+    </nav>
+</header>
+
+{% block content %}
+{% endblock %}
+</body>
+
+{% block js_scripts %}{% endblock %}
+</html>

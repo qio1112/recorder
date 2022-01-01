@@ -1,0 +1,5 @@
+/uploads/
+*/migrations
+/.idea
+/Recorder/secrets.properties
+/Recorder/mysql.cnf

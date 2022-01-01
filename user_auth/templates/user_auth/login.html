@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static "user_auth/user_auth.css" %}">
+</head>
+<body>
+
+<h2>Login</h2>
+<div>
+    <form action="{% url "login" %}" method="POST">
+        {% csrf_token %}
+        <div class="imgcontainer">
+            <img src="{% static "REC.png" %}" alt="Avatar" class="avatar">
+        </div>
+
+        <div class="container">
+            <label for="username"><b>Username</b></label>
+            <input type="text" placeholder="Enter Username" name="username" required>
+
+            <label for="password"><b>Password</b></label>
+            <input type="password" placeholder="Enter Password" name="password" required>
+
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+            <button type="submit">Login</button>
+            {#        <label>#}
+            {#          <input type="checkbox" checked="checked" name="remember"> Remember me#}
+            {#        </label>#}
+        </div>
+    </form>
+</div>
+</body>
+</html>
