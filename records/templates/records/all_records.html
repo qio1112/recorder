@@ -6,7 +6,16 @@
 {% endblock %}
 
 {% block css_files %}
-    <link rel="stylesheet" href="{% static "records/index.css" %}" />
+    <link rel="stylesheet" href="{% static "records/records.css" %}" />
+    <link rel="stylesheet" href="{% static "records/record-filter.css" %}">
+{% endblock %}
+
+{% block js_scripts %}
+    <script type="text/javascript">
+        const labels = {{labels|safe}}
+        const csrftoken = '{{ csrf_token }}';
+    </script>
+    <script src="{% static "records/record-filter.js" %}"></script>
 {% endblock %}
 
 {% block content %}

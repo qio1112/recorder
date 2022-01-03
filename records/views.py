@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, reverse
 from django.views import View
 from django.views.generic import ListView
 from django.db.models import Q
+import json
 
 import logging
 
@@ -230,32 +231,45 @@ class RecordsView(ListView):
     ordering = ["last_modified_date", "title"]
     paginate_by = 9
 
-    def get_queryset(self):
-        label_names_str = self.request.GET.get('labels', '')
+    def filter_selected_label_names(self):
+        labels_query = self.request.GET.get('labels', '')
         label_names = []
-        if label_names_str:
-            label_names = label_names_str.split(PIPE)
+        if labels_query:
+            label_names = json.loads(labels_query)
+        return label_names
+
+    def get_queryset(self):
+        labels_query = self.request.GET.get('labels', '')
+        selected_label_names = self.filter_selected_label_names()
         # order = self.request.GET.get('orderby', 'give-default-value')
         new_context = get_valid_record_by_user(self.request.user)
-        if label_names:
-            for label_name in label_names:
+        if selected_label_names:
+            for label_name in selected_label_names:
                 new_context = new_context.filter(
                     labels__name__exact=label_name,
                 )
         return new_context.order_by("last_modified_date", "title")
 
-    def post(self, request, *args, **kwargs):
-        filter_form = RecordFilterForm(request.POST)
-        filter_query = ''
-        if filter_form.is_valid():
-            filter_query = '?labels=' + filter_form.cleaned_data['filter_query']
-        return redirect(reverse('records') + filter_query)
+    # def post(self, request, *args, **kwargs):
+    #     record_filter_form = RecordFilterForm(request.POST)
+    #     filter_query = ""
+    #     if record_filter_form.is_valid():
+    #         label_names = record_filter_form.cleaned_data['labels']
+    #         print(f"label_names: {label_names}")
+    #         if label_names:
+    #             filter_query = "?labels=" + label_names
+    #     return redirect(reverse('records') + filter_query)
 
     def get_context_data(self, **kwargs):
         context = super(RecordsView, self).get_context_data(**kwargs)
         context['records_filter_query'] = RecordFilterForm()
         # context['filter'] = self.request.GET.get('filter', '')
         # context['orderby'] = self.request.GET.get('orderby', 'give-default-value')
+        labels = Label.objects.order_by('name').only('name').all()
+        label_names = [label.name for label in labels]
+        selected_label_names = self.filter_selected_label_names()
+        context['labels'] = label_names
+        context['selected_labels'] = selected_label_names
         return context
 
 

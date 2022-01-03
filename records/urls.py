@@ -13,5 +13,5 @@ urlpatterns = [
     path("records", login_required(views.RecordsView.as_view(), login_url="login"), name="records"),
     path("records/<int:record_id>", login_required(views.RecordDetailView.as_view(), login_url="login"), name="record-detail"),
     path("delete-label/<str:label_name>", login_required(views.DeleteLabelView.as_view(), login_url="login"), name="delete-label"),
-    path("delete-record/<int:record_id>", login_required(views.DeleteRecordView.as_view(), login_url="login"), name="delete-record")
+    path("delete-record/<int:record_id>", login_required(views.DeleteRecordView.as_view(), login_url="login"), name="delete-record"),
 ]

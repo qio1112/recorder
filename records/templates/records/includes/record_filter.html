@@ -1,5 +1,45 @@
-<form action="{% url 'records' %}" method="POST" class="filter">
-    {% csrf_token %}
-    {{ records_filter_query }}
-    <input type="submit" value="Submit">
-</form>
+<div class="records-filter">
+{#    <form action="{% url 'records' %}" method="POST" id="filter-form">#}
+    <div>
+        {% csrf_token %}
+        <div id="filter-labels">
+            <div class="filter-title">Select Labels</div>
+            <div id="filter-selected-labels">
+                <div id="labels-selected-area">
+                    {% for selected_label in selected_labels %}
+                        <div class="label-selected" id="{{ selected_label }}-selected">
+                            <div>{{ selected_label }}</div>
+                            <a class="delete-selected-label" href="#" onclick="deleteElementById('{{ selected_label }}-selected')"></a>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div id="filter-label-selections">
+                    <div class="filter-select" id="select-label-by-options">
+                        <label>Select Label</label>
+                        <select id="select-label-select">
+                            <option value="" disabled selected>Select Label</option>
+                            {% for label_name in labels %}
+                                <option value="{{ label_name }}">{{ label_name }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="filter-button"><a onclick="addSelectedLabelByOption({{ label_name }})">Add</a></div>
+                    </div>
+                    <div class="filter-select" id="select-label-by-text">
+                        <label>Add Label</label>
+                        <input id="select-label-text" type="text">
+                        <div class="filter-button"><a onclick="addSelectedLabelByText()">Add</a></div>
+                    </div>
+                </div>
+            </div>
+
+            {#        <div id="filter-author">#}
+            {#            <label for="filter-author-name">Author</label>#}
+            {#            <input type="text" id="filter-author-name" name="filter-author-name"/>#}
+            {#            <button type="button">By Me</button>#}
+            {#        </div>#}
+
+            <div id="submit-button" onclick="submitFilterForm('{% url 'records' %}')">Search</div>
+        </div>
+    </div>
+{#    </form>#}
+</div>

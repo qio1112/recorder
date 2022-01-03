@@ -1,7 +1,9 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 from Recorder.utils import LABEL_TYPE_CHOICES, LABEL_TYPE_DATE
 from django.contrib.auth.models import User as AuthUser
 from django.db.models import Q
+from Recorder.utils import PIPE
 
 
 class User(models.Model):
@@ -14,8 +16,13 @@ class User(models.Model):
         return self.user_name
 
 
+def label_name_validator(name):
+    if PIPE in name:
+        raise ValidationError(f"Pipe '|' cannot be used in label names")
+
+
 class Label(models.Model):
-    name = models.CharField(max_length=100, primary_key=True)
+    name = models.CharField(max_length=100, primary_key=True, validators=[label_name_validator])
     type = models.CharField(max_length=100, default="DEFAULT", choices=LABEL_TYPE_CHOICES)
     created_date = models.DateTimeField(auto_now_add=True, editable=False)
     last_modified_date = models.DateTimeField(auto_now=True)
@@ -73,6 +80,7 @@ class Picture(models.Model):
         return f'{self.picture.name} in {self.record.title}'
 
 
+# get records which the user has right to see
 def get_valid_record_by_user(account_user):
     if not account_user:
         return []
