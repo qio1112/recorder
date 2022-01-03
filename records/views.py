@@ -1,3 +1,5 @@
+from json import JSONDecodeError
+
 from django.shortcuts import render, redirect, reverse
 from django.views import View
 from django.views.generic import ListView
@@ -235,7 +237,11 @@ class RecordsView(ListView):
         labels_query = self.request.GET.get('labels', '')
         label_names = []
         if labels_query:
-            label_names = json.loads(labels_query)
+            try:
+                label_names = json.loads(labels_query)
+            except JSONDecodeError:
+                # in this case it's a single label query
+                label_names = [labels_query]
         return label_names
 
     def get_queryset(self):
