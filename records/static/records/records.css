@@ -17,8 +17,15 @@
   padding: 2rem;
   border-radius: 12px;
   width: 60rem;
-  margin: 6rem auto 3rem auto;
   box-shadow: 1px 1px 12px rgba(0, 0, 0, 0.4);
+}
+
+.under-nav {
+  margin: 6rem auto 1rem auto;
+}
+
+.under-other-content {
+  margin: 1rem auto 1rem auto;
 }
 
 .tall-list-item a {

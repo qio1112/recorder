@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="records-list tall_list_item">
+    <div class="records-list tall_list_item under-nav">
         <h2>Latest Created/Modified Records</h2>
         <ul>
             {% for record in latest_records %}
@@ -21,7 +21,7 @@
         </ul>
     </div>
 
-    <div class="records-list">
+    <div class="records-list under-other-content">
         <h2>Records of Today</h2>
         {% if today_records %}
         <ul>
