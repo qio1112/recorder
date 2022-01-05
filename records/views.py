@@ -26,7 +26,8 @@ class IndexPageView(View):
         # get at most three records with label of today
         today = get_current_date_str()
         print(today)
-        today_records = get_valid_record_by_user(request.user).filter(labels__name=today).filter(labels__type='DATE')
+        today_records = get_valid_record_by_user(request.user).filter(labels__name=today, labels__type='DATE')
+        print(today_records)
         context = {
             'latest_records': latest_records,
             'today_records': today_records
