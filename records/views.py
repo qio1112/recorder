@@ -55,22 +55,21 @@ class EditRecordView(View):
         account_user = request.user
         if not record.can_be_edited_by(account_user):
             return redirect(reverse('record-detail', args=[record_id]))
-        label_str = ''
-        for label in record.labels.order_by('name').all():
-            if label_str:
-                label_str = label_str + PIPE + label.name
-            else:
-                label_str = label.name
+        existing_labels = Label.objects.order_by('name').only('name').all()
+        existing_labels_names = [label.name for label in existing_labels]
         existing_images = record.pictures.all()
+        used_labels = record.labels.order_by('name').only('name').all()
         record_form = RecordForm(delete_images=existing_images,
                                  initial={'title': record.title,
                                           'is_public': record.is_public,
-                                          'labels': label_str,
+                                          'labels': '',
                                           'create_new_labels': True,
                                           'content': record.content
                                           })
         return render(request, 'records/add_edit_record.html', {'form': record_form,
                                                                 'title': 'Edit Record',
+                                                                'existing_labels': existing_labels_names,
+                                                                'used_labels': used_labels,
                                                                 'record_id': record.id})
 
     def post(self, request, record_id):
@@ -113,8 +112,12 @@ class EditRecordView(View):
 class AddRecordView(View):
 
     def get(self, request):
+        existing_labels = Label.objects.order_by('name').only('name').all()
+        existing_labels_names = [label.name for label in existing_labels]
         return render(request, 'records/add_edit_record.html', {'form': RecordForm(),
-                                                                "title": "Add New Record"})
+                                                                'title': "Add New Record",
+                                                                'existing_labels': existing_labels_names,
+                                                                'post_url': reverse('add-record')})
 
     def post(self, request, *args, **kwargs):
         new_record_form = RecordForm([], request.POST, request.FILES)
@@ -141,6 +144,7 @@ class AddRecordView(View):
             new_record.save()
             return redirect(reverse('record-detail', args=[new_record.id]))
         else:
+            print(f"Add Record POST: invalid form, {new_record_form.errors}")
             return redirect(reverse('add-record'))
 
 
@@ -292,7 +296,7 @@ class RecordDetailView(View):
 def add_labels_from_record_form(valid_record_form, title, request, add_current_date=True):
     # labels
     labels_str = valid_record_form.cleaned_data['labels']
-    label_names = labels_str.split(PIPE)
+    label_names = json.loads(labels_str)
     create_new_labels = valid_record_form.cleaned_data['create_new_labels']
     nonexistent_labels = set()
     all_labels = set()

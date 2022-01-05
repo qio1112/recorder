@@ -12,8 +12,8 @@
 
 {% block js_scripts %}
     <script type="text/javascript">
-        const labels = {{labels|safe}}
-        const csrftoken = '{{ csrf_token }}';
+        const existing_labels = {{labels|safe}}
+        const csrftoken = '{{ csrf_token }}'
     </script>
     <script src="{% static "records/record-filter.js" %}"></script>
 {% endblock %}

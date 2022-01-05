@@ -17,7 +17,8 @@ class User(models.Model):
 
 
 def label_name_validator(name):
-    if PIPE in name:
+    invalid_strings = [PIPE, '=', '[', ']', '{', '}', ',', '\'', '\"']
+    if any(invalid_str in name for invalid_str in invalid_strings):
         raise ValidationError(f"Pipe '|' cannot be used in label names")
 
 

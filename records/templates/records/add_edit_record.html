@@ -7,6 +7,15 @@
 
 {% block css_files %}
       <link rel="stylesheet" href="{% static "records/records.css" %}" />
+      <link rel="stylesheet" href="{% static "records/record-filter.css" %}">
+{% endblock %}
+
+{% block js_scripts %}
+    <script type="text/javascript">
+        const existing_labels = {{existing_labels|safe}};
+        const csrftoken = '{{ csrf_token }}';
+    </script>
+    <script src="{% static "records/record-filter.js" %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -16,7 +25,11 @@
                           {% url 'add-record' %}
                        {% else %}
                           {% url 'edit-record' record_id %}
-                       {% endif %}" method="POST" enctype="multipart/form-data">
+                       {% endif %}"
+              method="POST"
+              enctype="multipart/form-data"
+              id="add-edit-record-form"
+        >
             {% csrf_token %}
             {% for field in form %}
                 {% if "Content" in field.label_tag %}
@@ -41,6 +54,8 @@
                             {{ field.errors }}
                         </div>
                     {% endif %}
+                {% elif "Labels" in field.label_tag %}
+                    {% include "records/includes/record_edit_label_filter.html" %}
                 {% else %}
                     <div class="form-row record-input {% if field.errors %}error-message{% endif %}">
                         {{ field.label_tag }}
@@ -49,7 +64,7 @@
                     </div>
                 {% endif %}
             {% endfor %}
-            <input class="button-1" type="submit" value="Submit">
+            <input class="button-1" type="button" value="Submit" onclick="submitAddRecordForm('{{ post_url }}')">
         </form>
     </div>
 {% endblock %}

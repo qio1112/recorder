@@ -16,7 +16,7 @@ class RecordForm(forms.Form):
     title = forms.CharField(max_length=200)
     is_public = forms.BooleanField(initial=True, required=False)
     labels = forms.CharField(empty_value="")
-    create_new_labels = forms.BooleanField(initial=False, required=False)
+    create_new_labels = forms.BooleanField(initial=True, required=False)
     content = forms.CharField(widget=forms.Textarea)
     images = forms.ImageField(widget=forms.FileInput(attrs={'multiple': True}), required=False)
     delete_images = forms.MultipleChoiceField(required=False,

@@ -31,7 +31,19 @@
   font-size: 0.8rem;
   text-align: center;
   align-items: center;
+}
 
+.label-selected-new {
+  background-color: deepskyblue;
+  color: antiquewhite;
+  margin: 0.1rem 0.2rem;
+  padding: 0.1rem;
+  border-radius: 0.25rem;
+  display: flex;
+  flex-direction: row;
+  font-size: 0.8rem;
+  text-align: center;
+  align-items: center;
 }
 
 .delete-selected-label {
@@ -105,4 +117,10 @@
 
 #submit-button:hover {
   transform: scale(1.1);
+}
+
+#record-edit-label {
+  border-radius: 0.5rem;
+  border: solid 1px gray;
+  padding: 0.3rem 1rem;
 }
