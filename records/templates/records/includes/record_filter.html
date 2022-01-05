@@ -7,9 +7,9 @@
             <div id="filter-selected-labels">
                 <div id="labels-selected-area">
                     {% for selected_label in selected_labels %}
-                        <div class="label-selected" id="{{ selected_label }}-selected">
+                        <div class="label-selected" id="selected-{{ selected_label }}">
                             <div>{{ selected_label }}</div>
-                            <a class="delete-selected-label" href="#" onclick="deleteElementById('{{ selected_label }}-selected')"></a>
+                            <a class="delete-selected-label" href="#" onclick="deleteElementById('selected-{{ selected_label }}')"></a>
                         </div>
                     {% endfor %}
                 </div>
