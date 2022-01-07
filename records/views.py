@@ -58,8 +58,10 @@ class EditRecordView(View):
             return redirect(reverse('record-detail', args=[record_id]))
         existing_labels = Label.objects.order_by('name').only('name').all()
         existing_labels_names = [label.name for label in existing_labels]
+        tarot_labels = Label.objects.filter(type='TAROT').all()
+        tarot_label_names = [label.name for label in tarot_labels]
         existing_images = record.pictures.all()
-        used_labels = record.labels.order_by('name').all()
+        used_labels = record.labels.order_by('type').all()
         record_form = RecordForm(delete_images=existing_images,
                                  initial={'title': record.title,
                                           'is_public': record.is_public,
@@ -70,6 +72,7 @@ class EditRecordView(View):
         return render(request, 'records/add_edit_record.html', {'form': record_form,
                                                                 'title': 'Edit Record',
                                                                 'existing_labels': existing_labels_names,
+                                                                'tarot_labels': tarot_label_names,
                                                                 'used_labels': used_labels,
                                                                 'record_id': record.id})
 
@@ -115,9 +118,12 @@ class AddRecordView(View):
     def get(self, request):
         existing_labels = Label.objects.order_by('name').only('name').all()
         existing_labels_names = [label.name for label in existing_labels]
+        tarot_labels = Label.objects.filter(type='TAROT').all()
+        tarot_label_names = [label.name for label in tarot_labels]
         return render(request, 'records/add_edit_record.html', {'form': RecordForm(),
                                                                 'title': "Add New Record",
                                                                 'existing_labels': existing_labels_names,
+                                                                'tarot_labels': tarot_label_names,
                                                                 'post_url': reverse('add-record')})
 
     def post(self, request, *args, **kwargs):

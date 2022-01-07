@@ -12,8 +12,9 @@
 
 {% block js_scripts %}
     <script type="text/javascript">
-        const existing_labels = {{existing_labels|safe}};
-        const csrftoken = '{{ csrf_token }}';
+        const EXISTING_LABELS = {{existing_labels|safe}};
+        const CSRF_TOKEN = '{{ csrf_token }}';
+        const TAROT_LABELS = {{ tarot_labels|safe }};
     </script>
     <script src="{% static "records/record-filter.js" %}"></script>
 {% endblock %}
