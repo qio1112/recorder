@@ -5,9 +5,9 @@
             <div id="filter-selected-labels">
                 <div id="labels-selected-area">
                     {% for used_label in used_labels %}
-                        <div class="label-selected" id="selected-{{ used_label }}">
-                            <div>{{ used_label }}</div>
-                            <a class="delete-selected-label" href="#" onclick="deleteElementById('selected-{{ used_label }}')"></a>
+                        <div class="label-selected {% if used_label.type == 'TAROT' %}label-selected-tarot{% endif %}" id="selected-{{ used_label.name }}">
+                            <div>{{ used_label.name }}</div>
+                            <a class="delete-selected-label" href="#" onclick="deleteElementById('selected-{{ used_label.name }}')"></a>
                         </div>
                     {% endfor %}
                 </div>

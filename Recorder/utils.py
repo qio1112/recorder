@@ -76,7 +76,11 @@ def get_tarot_image_path_by_name(tarot_name):
 
 
 def is_tarot_name(name):
+    if isinstance(name, str):
+        if name.endswith('_R'):
+            name = name[:-2]
     return name in TAROT_NAMES
+
 
 
 

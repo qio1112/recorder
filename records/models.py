@@ -102,5 +102,11 @@ def preload_tarot_labels():
                                       editable=False,
                                       created_by=default_user,
                                       last_modified_by=default_user))
+        if not Label.objects.filter(pk=tarot_name+'_R').exists():
+            tarot_labels.append(Label(name=tarot_name + '_R',
+                                      type=LABEL_TYPE_TAROT,
+                                      editable=False,
+                                      created_by=default_user,
+                                      last_modified_by=default_user))
     Label.objects.bulk_create(tarot_labels)
 

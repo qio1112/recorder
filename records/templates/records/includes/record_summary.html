@@ -5,7 +5,7 @@
         <p>
             <span>Labels: </span>
             {% for label in record.labels.all|slice:"0:4" %}
-                <span class="label-name">{{ label }}</span>
+                <span class="label-name {% if label.type == 'TAROT' %}label-name-tarot{% endif %}">{{ label }}</span>
             {% endfor %}
             {% if record.labels.all.count > 4 %}
                 <span>and more..</span>

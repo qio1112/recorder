@@ -59,7 +59,7 @@ class EditRecordView(View):
         existing_labels = Label.objects.order_by('name').only('name').all()
         existing_labels_names = [label.name for label in existing_labels]
         existing_images = record.pictures.all()
-        used_labels = record.labels.order_by('name').only('name').all()
+        used_labels = record.labels.order_by('name').all()
         record_form = RecordForm(delete_images=existing_images,
                                  initial={'title': record.title,
                                           'is_public': record.is_public,
@@ -174,6 +174,7 @@ class AddLabelView(View):
                                   last_modified_by=user
                                   )
                 new_label.save()
+                succeeded = True
             else:
                 new_label_form.add_error('name', f'Label {label_name} Already Exists!')
                 succeeded = False
@@ -277,15 +278,16 @@ class RecordsView(ListView):
         # context['filter'] = self.request.GET.get('filter', '')
         # context['orderby'] = self.request.GET.get('orderby', 'give-default-value')
         labels = Label.objects.order_by('name').only('name').all()
+        tarot_labels = Label.objects.filter(type='TAROT').only('name').all()
         label_names = [label.name for label in labels]
+        tarot_label_names = [label.name for label in tarot_labels]
         selected_label_names = self.filter_selected_label_names()
-        context['labels'] = label_names
-        context['selected_labels'] = selected_label_names
-        selected_labels_is_tarot = {}
+        selected_labels = []
         if selected_label_names:
-            for selected_label in selected_label_names:
-                selected_labels_is_tarot[selected_label] = is_tarot_name(selected_label)
-        context['selected_labels_is_tarot'] = selected_labels_is_tarot
+            selected_labels = Label.objects.filter(name__in=selected_label_names).all()
+        context['labels'] = label_names
+        context['selected_labels'] = selected_labels
+        context['tarot_labels'] = tarot_label_names
         return context
 
 
