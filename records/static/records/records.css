@@ -162,12 +162,20 @@
   min-height: 5rem;
 }
 
+.tarot {
+  color: purple;
+}
+
 .label-name {
   background-color: cadetblue;
   color: antiquewhite;
   margin: 0.1rem;
   padding: 0.1rem;
   border-radius: 0.25rem;
+}
+
+.label-name-tarot {
+  background-color: mediumpurple;
 }
 
 .label-name a {

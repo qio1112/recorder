@@ -10,7 +10,7 @@ import logging
 
 from .models import Record, Label, User, Picture, get_valid_record_by_user
 from .forms import RecordFilterForm, LabelForm, RecordForm
-from Recorder.utils import get_current_date_str, PIPE, is_date, LABEL_TYPE_DEFAULT, LABEL_TYPE_DATE
+from Recorder.utils import get_current_date_str, PIPE, is_date, LABEL_TYPE_DEFAULT, LABEL_TYPE_DATE, is_tarot_name
 
 logger = logging.getLogger("records.view")
 
@@ -281,6 +281,11 @@ class RecordsView(ListView):
         selected_label_names = self.filter_selected_label_names()
         context['labels'] = label_names
         context['selected_labels'] = selected_label_names
+        selected_labels_is_tarot = {}
+        if selected_label_names:
+            for selected_label in selected_label_names:
+                selected_labels_is_tarot[selected_label] = is_tarot_name(selected_label)
+        context['selected_labels_is_tarot'] = selected_labels_is_tarot
         return context
 
 

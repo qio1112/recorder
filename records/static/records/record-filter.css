@@ -33,6 +33,10 @@
   align-items: center;
 }
 
+.label-selected-tarot {
+    background-color: mediumpurple;
+}
+
 .label-selected-new {
   background-color: deepskyblue;
   color: antiquewhite;

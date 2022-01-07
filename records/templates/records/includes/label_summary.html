@@ -3,7 +3,7 @@
 <article class="record-list-item short-list-item">
     <a href="{% url "records" %}?labels={{ label.name }}">
         <div>
-            <h4>{{ label.name }}</h4>
+            <h4 class="{% if label.type == 'TAROT' %}tarot{% endif %}">{{ label.name }}</h4>
             <p>Created By: {{ label.created_by.user_name }}</p>
             {#        <p>Created On: {{ label.created_date|date:"Y-m-d H:i:s" }}</p>#}
             <p>Number of related records: {{ label.records.all.count }}</p>

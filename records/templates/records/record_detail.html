@@ -18,7 +18,9 @@
         <p>
             <span class="column-name">Labels</span>
             {% for label in record.labels.all %}
-                <span class="label-name"><a href="{% url 'records' %}?labels={{ label.name }}">{{ label.name }}</a></span>
+                <span class="label-name {% if label.type == 'TAROT' %}label-name-tarot{% endif %}">
+                    <a href="{% url 'records' %}?labels={{ label.name }}">{{ label.name }}</a>
+                </span>
             {% endfor %}
         </p>
         <div class="buttons">

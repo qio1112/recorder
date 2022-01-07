@@ -3,7 +3,7 @@ from django.db import models
 from Recorder.utils import LABEL_TYPE_CHOICES, LABEL_TYPE_DATE
 from django.contrib.auth.models import User as AuthUser
 from django.db.models import Q
-from Recorder.utils import PIPE
+from Recorder.utils import PIPE, TAROT_NAMES, LABEL_TYPE_TAROT
 
 
 class User(models.Model):
@@ -90,4 +90,17 @@ def get_valid_record_by_user(account_user):
     else:
         shown_user = account_user.shown_user.get()
         return Record.objects.filter(Q(created_by=shown_user) | Q(is_public=True))
+
+
+def preload_tarot_labels():
+    tarot_labels = []
+    default_user = User.objects.get(user_name='Yipeng')
+    for tarot_name in TAROT_NAMES:
+        if not Label.objects.filter(pk=tarot_name).exists():
+            tarot_labels.append(Label(name=tarot_name,
+                                      type=LABEL_TYPE_TAROT,
+                                      editable=False,
+                                      created_by=default_user,
+                                      last_modified_by=default_user))
+    Label.objects.bulk_create(tarot_labels)
 

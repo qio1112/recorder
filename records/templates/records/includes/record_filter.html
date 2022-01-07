@@ -7,7 +7,7 @@
             <div id="filter-selected-labels">
                 <div id="labels-selected-area">
                     {% for selected_label in selected_labels %}
-                        <div class="label-selected" id="selected-{{ selected_label }}">
+                        <div class="label-selected {% if selected_labels_is_tarot|get_item:selected_label %}label-selected-tarot{% endif %}" id="selected-{{ selected_label }}">
                             <div>{{ selected_label }}</div>
                             <a class="delete-selected-label" href="#" onclick="deleteElementById('selected-{{ selected_label }}')"></a>
                         </div>
