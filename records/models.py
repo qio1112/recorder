@@ -59,6 +59,7 @@ class Record(models.Model):
     last_modified_date = models.DateTimeField(auto_now=True)
     labels = models.ManyToManyField(Label, related_name='records')
     is_public = models.BooleanField(default=True)
+    metadata = models.CharField(max_length=5000, null=True)
 
     def __str__(self):
         return self.title
