@@ -46,3 +46,9 @@ class LogoutView(View):
         return redirect('login')
 
 
+class HomeView(View):
+
+    def get(self, request):
+        return redirect('login')
+
+

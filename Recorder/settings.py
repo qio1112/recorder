@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY', read_secret_keys()['SECRET_KEY'])
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('IS_DEVELOPMENT', True)
+DEBUG = os.getenv('IA_DEBUG', True)
 
 ALLOWED_HOSTS = [os.getenv('ALLOWED_HOST'), 'localhost']
 
@@ -81,26 +81,24 @@ WSGI_APPLICATION = 'Recorder.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-if os.getenv('IS_DEVELOPMENT', True):
-    DATABASES = {
-        'default': {
-            'ENGINE': 'mysql.connector.django',
-            'OPTIONS': {
-                'read_default_file': './Recorder/mysql.cnf'
-            }
-        }
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': 'mysql.connector.django',
+#             'OPTIONS': {
+#                 'read_default_file': './Recorder/mysql.cnf'
+#             }
+#         }
+#     }
+DATABASES = {
+    'default': {
+        'ENGINE': 'mysql.connector.django',
+        'NAME': os.getenv('DB_NAME', 'recorder'),
+        'USER': os.getenv('DB_USER', read_secret_keys()['DB_USER']),
+        'PASSWORD': os.getenv('DB_PASSWORD', read_secret_keys()['DB_PASSWORD']),
+        'HOST': os.getenv('DB_HOST', read_secret_keys()['DB_HOST']),
+        'PORT': os.getenv('DB_PORT', read_secret_keys()['DB_PORT'])
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': os.getenv('DB_NAME', 'recorder'),
-            'USER': os.getenv('DB_USER', read_secret_keys()['DB_USER']),
-            'PASSWORD': os.getenv('DB_PASSWORD', read_secret_keys()['DB_PASSWORD']),
-            'HOST': os.getenv('DB_HOST', read_secret_keys()['DB_HOST']),
-            'PORT': os.getenv('DB_PORT', read_secret_keys()['DB_PORT'])
-        }
-    }
+}
 
 
 # Password validation
