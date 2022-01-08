@@ -109,5 +109,5 @@ def preload_tarot_labels():
                                       editable=False,
                                       created_by=default_user,
                                       last_modified_by=default_user))
-    Label.objects.bulk_create(tarot_labels)
+    return Label.objects.bulk_create(tarot_labels)
 
