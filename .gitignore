@@ -3,3 +3,4 @@
 /.idea
 /Recorder/secrets.properties
 /Recorder/mysql.cnf
+/staticfiles/
