@@ -64,6 +64,7 @@ def read_secret_keys():
         lines = property_file.readlines()
         properties = {}
         for line in lines:
+            line = line.strip()
             if EQUALS in line:
                 properties[line.split(EQUALS)[0]] = line.split(EQUALS)[1]
         return properties

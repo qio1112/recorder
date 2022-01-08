@@ -93,7 +93,7 @@ if os.getenv('IS_DEVELOPMENT', True):
 else:
     DATABASES = {
         'default': {
-            'ENGINE': 'mysql.connector.django',
+            'ENGINE': 'django.db.backends.mysql',
             'NAME': os.getenv('DB_NAME', 'recorder'),
             'USER': os.getenv('DB_USER', read_secret_keys()['DB_USER']),
             'PASSWORD': os.getenv('DB_PASSWORD', read_secret_keys()['DB_PASSWORD']),
