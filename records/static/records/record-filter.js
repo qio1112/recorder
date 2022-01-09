@@ -1,11 +1,3 @@
-function setTextValueToId(id, text) {
-    let element = document.getElementById(id)
-    element.textContent = text
-}
-
-// newDiv = document.createELement("div")
-// divList.appendChild(newDiv)
-
 const INVALID_LABEL_NAME_CHARS = ['|', '=', '[', ']', '{', '}', ',', '\'', '\"']
 
 function appendNewSelectedLabel(labelName, createNew) {

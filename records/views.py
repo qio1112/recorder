@@ -58,7 +58,7 @@ class EditRecordView(View):
             return redirect(reverse('record-detail', args=[record_id]))
         existing_labels = Label.objects.order_by('name').only('name').all()
         existing_labels_names = [label.name for label in existing_labels]
-        tarot_labels = Label.objects.filter(type='TAROT').all()
+        tarot_labels = Label.objects.filter(type='TAROT').only('name').all()
         tarot_label_names = [label.name for label in tarot_labels]
         existing_images = record.pictures.all()
         used_labels = record.labels.order_by('type').all()
@@ -300,11 +300,13 @@ class RecordsView(ListView):
 class RecordDetailView(View):
 
     def get(self, request, record_id):
-        record = Record.objects.get(id=record_id)
-        account_user = request.user
-        can_edit = record.can_be_edited_by(account_user)
-        context = {'record': record, 'can_edit': can_edit}
-        return render(request, "records/record_detail.html", context)
+        if Record.objects.filter(id=record_id).exists():
+            record = Record.objects.get(id=record_id)
+            account_user = request.user
+            can_edit = record.can_be_edited_by(account_user)
+            context = {'record': record, 'can_edit': can_edit}
+            return render(request, "records/record_detail.html", context)
+        return redirect('records')
 
 
 def add_labels_from_record_form(valid_record_form, title, request, add_current_date=True):

@@ -81,24 +81,24 @@ WSGI_APPLICATION = 'Recorder.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': 'mysql.connector.django',
-#             'OPTIONS': {
-#                 'read_default_file': './Recorder/mysql.cnf'
-#             }
-#         }
-#     }
 DATABASES = {
     'default': {
         'ENGINE': 'mysql.connector.django',
-        'NAME': os.getenv('DB_NAME', 'recorder'),
-        'USER': os.getenv('DB_USER', read_secret_keys()['DB_USER']),
-        'PASSWORD': os.getenv('DB_PASSWORD', read_secret_keys()['DB_PASSWORD']),
-        'HOST': os.getenv('DB_HOST', read_secret_keys()['DB_HOST']),
-        'PORT': os.getenv('DB_PORT', read_secret_keys()['DB_PORT'])
+        'OPTIONS': {
+            'read_default_file': './Recorder/mysql.cnf'
+        }
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'mysql.connector.django',
+#         'NAME': os.getenv('DB_NAME', 'recorder'),
+#         'USER': os.getenv('DB_USER', read_secret_keys()['DB_USER']),
+#         'PASSWORD': os.getenv('DB_PASSWORD', read_secret_keys()['DB_PASSWORD']),
+#         'HOST': os.getenv('DB_HOST', read_secret_keys()['DB_HOST']),
+#         'PORT': os.getenv('DB_PORT', read_secret_keys()['DB_PORT'])
+#     }
+# }
 
 
 # Password validation

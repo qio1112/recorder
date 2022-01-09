@@ -12,9 +12,9 @@ EQUALS = '='
 LABEL_TYPE_DEFAULT = 'DEFAULT'
 LABEL_TYPE_DATE = 'DATE'
 LABEL_TYPE_TAROT = 'TAROT'
-LABEL_TYPE_CHOICES = ((0, LABEL_TYPE_DATE),
-                      (1, LABEL_TYPE_TAROT),
-                      (2, LABEL_TYPE_DEFAULT))
+LABEL_TYPE_CHOICES = ((LABEL_TYPE_DATE, LABEL_TYPE_DATE),
+                      (LABEL_TYPE_TAROT, LABEL_TYPE_TAROT),
+                      (LABEL_TYPE_DEFAULT, LABEL_TYPE_DEFAULT))
 
 TAROT_NAMES = ('00_the_fool', '01_the_magician', '02_the_high_priestess', '03_the_empress', '04_the_emperor',
                '05_the_hierophant', '06_the_lovers', '07_the_chariot', '08_strength', '09_the_hermit',
