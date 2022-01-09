@@ -83,6 +83,18 @@ def is_tarot_name(name):
     return name in TAROT_NAMES
 
 
+def is_reversed_tarot_name(name):
+    return is_tarot_name(name) and name.endswith('_R')
+
+
+def reverse_tarot_name(name):
+    if is_tarot_name(name):
+        if name.endswith('_R'):
+            return name[:-2]
+        else:
+            return name + '_R'
+    return None
+
 
 
 

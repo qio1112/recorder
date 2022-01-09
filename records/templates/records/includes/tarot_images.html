@@ -1,0 +1,13 @@
+<div id="tarot-images-area">
+    <div id="tarot-images">
+        {% for tarot_label in record.get_tarot_cards_ordered %}
+            {% if tarot_label.is_tarot_card %}
+                <div id="tarot-image-wrapping-{{ tarot_label.name }}" class="tarot-image-cell">
+                    <p>{{ tarot_label }}</p>
+                    <img src="{{ tarot_label.get_tarot_image }}"
+                         class="tarot-image {% if tarot_label.is_revered_tarot_card %}tarot-image-reversed{% endif %}"/>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>

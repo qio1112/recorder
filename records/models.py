@@ -1,9 +1,14 @@
+from json import JSONDecodeError
+
 from django.core.exceptions import ValidationError
 from django.db import models
 from Recorder.utils import LABEL_TYPE_CHOICES, LABEL_TYPE_DATE
 from django.contrib.auth.models import User as AuthUser
 from django.db.models import Q
-from Recorder.utils import PIPE, TAROT_NAMES, LABEL_TYPE_TAROT
+from django.templatetags.static import static
+from Recorder.utils import PIPE, TAROT_NAMES, LABEL_TYPE_TAROT, reverse_tarot_name, \
+    is_tarot_name, is_reversed_tarot_name
+import json
 
 
 class User(models.Model):
@@ -47,6 +52,20 @@ class Label(models.Model):
             shown_user = account_user.shown_user.get()
             return self.created_by.pk == shown_user.pk
 
+    def get_tarot_image(self):
+        if self.type == LABEL_TYPE_TAROT and self.is_tarot_card():
+            if self.is_revered_tarot_card():
+                return static(f'tarot/{reverse_tarot_name(self.name)}.png')
+            else:
+                return static(f'tarot/{self.name}.png')
+        return None
+
+    def is_tarot_card(self):
+        return is_tarot_name(self.name)
+
+    def is_revered_tarot_card(self):
+        return is_reversed_tarot_name(self.name)
+
     def __str__(self):
         return self.name
 
@@ -72,6 +91,37 @@ class Record(models.Model):
         else:
             shown_user = account_user.shown_user.get()
             return self.created_by.pk == shown_user.pk
+
+    def get_tarot_labels(self):
+        return self.labels.filter(type=LABEL_TYPE_TAROT).all()
+
+    def get_tarot_cards_ordered(self):
+        tarot_labels = self.labels.filter(type=LABEL_TYPE_TAROT).all()
+        tarot_cards = []
+        for tarot_label in tarot_labels:
+            if tarot_label.is_tarot_card():
+                tarot_cards.append(tarot_label)
+        tarot_name_label_dict = dict(zip([tarot_label.name for tarot_label in tarot_cards], tarot_cards))
+        try:
+            if self.metadata:
+                print(f'metadata: {self.metadata}')
+                metadata = json.loads(self.metadata)
+                tarot_card_order = metadata['tarot_card_order']
+                ordered = []
+                if tarot_card_order and len(tarot_card_order) == len(tarot_cards):
+                    for tarot_card_in_order in tarot_card_order:
+                        if not tarot_name_label_dict.get(tarot_card_in_order):
+                            raise ValueError(f"Invalid tarot order in metadata! {tarot_card_in_order}")
+                        ordered.append(tarot_name_label_dict.get(tarot_card_in_order))
+                return ordered
+            else:
+                return tarot_cards
+        except JSONDecodeError as e:
+            print(f"Cannot parse metadata json: {e}")
+            return tarot_cards
+        except ValueError:
+            print(f"Invalid tarot order in metadata: {e}")
+            return tarot_cards
 
 
 class Picture(models.Model):
@@ -103,11 +153,10 @@ def preload_tarot_labels():
                                       editable=False,
                                       created_by=default_user,
                                       last_modified_by=default_user))
-        if not Label.objects.filter(pk=tarot_name+'_R').exists():
-            tarot_labels.append(Label(name=tarot_name + '_R',
+        if not Label.objects.filter(pk=reverse_tarot_name(tarot_name)).exists():
+            tarot_labels.append(Label(name=reverse_tarot_name(tarot_name),
                                       type=LABEL_TYPE_TAROT,
                                       editable=False,
                                       created_by=default_user,
                                       last_modified_by=default_user))
     return Label.objects.bulk_create(tarot_labels)
-

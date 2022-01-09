@@ -7,6 +7,7 @@
 
 {% block css_files %}
     <link rel="stylesheet" href="{% static "records/records.css" %}" />
+    <link rel="stylesheet" href="{% static "records/tarot_images.css" %}" />
 {% endblock %}
 
 {% block content %}
@@ -37,6 +38,7 @@
 {#                <button class="button-1" type="submit">Delete Record</button>#}
 {#            </form>#}
         </div>
+        {% include "records/includes/tarot_images.html" %}
         <article class="record-detail-content">{{ record.content }}</article>
         <div>
             {% if record.pictures.all %}
