@@ -1,5 +1,7 @@
 from json import JSONDecodeError
 
+from django.http import JsonResponse
+from django.core import serializers
 from django.shortcuts import render, redirect, reverse
 from django.views import View
 from django.views.generic import ListView
@@ -10,7 +12,8 @@ import logging
 
 from .models import Record, Label, User, Picture, get_valid_record_by_user
 from .forms import RecordFilterForm, LabelForm, RecordForm
-from Recorder.utils import get_current_date_str, PIPE, is_date, LABEL_TYPE_DEFAULT, LABEL_TYPE_DATE, is_tarot_name
+from Recorder.utils import get_current_date_str, PIPE, is_date, LABEL_TYPE_DEFAULT, LABEL_TYPE_DATE, is_tarot_name, \
+    LABEL_TYPE_TAROT
 
 logger = logging.getLogger("records.view")
 
@@ -124,7 +127,8 @@ class AddRecordView(View):
                                                                 'title': "Add New Record",
                                                                 'existing_labels': existing_labels_names,
                                                                 'tarot_labels': tarot_label_names,
-                                                                'post_url': reverse('add-record')})
+                                                                'post_url': reverse('add-record')
+                                                                })
 
     def post(self, request, *args, **kwargs):
         new_record_form = RecordForm([], request.POST, request.FILES)
@@ -307,6 +311,21 @@ class RecordDetailView(View):
             context = {'record': record, 'can_edit': can_edit}
             return render(request, "records/record_detail.html", context)
         return redirect('records')
+
+
+class LabelAjaxView(View):
+
+    def get(self, request, label_name):
+        label = Label.objects.filter(pk=label_name)
+        if label.exists():
+            label = label.get()
+            response = {"label_name": label.name,
+                        "type": label.type}
+            if label.type == LABEL_TYPE_TAROT and label.is_tarot_card():
+                response["tarot_image_url"] = label.get_tarot_image()
+            return JsonResponse(response, status="200", safe=False)
+        else:
+            return JsonResponse({"error": f"Invalid label name: {label_name}"}, status="404")
 
 
 def add_labels_from_record_form(valid_record_form, title, request, add_current_date=True):

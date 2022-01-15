@@ -8,6 +8,7 @@
 {% block css_files %}
       <link rel="stylesheet" href="{% static "records/records.css" %}" />
       <link rel="stylesheet" href="{% static "records/record-filter.css" %}">
+      <link rel="stylesheet" href="{% static "records/tarot_images.css" %}" />
 {% endblock %}
 
 {% block js_scripts %}
@@ -15,6 +16,7 @@
         const EXISTING_LABELS = {{existing_labels|safe}};
         const CSRF_TOKEN = '{{ csrf_token }}';
         const TAROT_LABELS = {{ tarot_labels|safe }};
+        const LABEL_AJAX_URL = {% url "records-index-page" %} + "label-info/";
     </script>
     <script src="{% static "records/record-filter.js" %}"></script>
 {% endblock %}
@@ -34,6 +36,10 @@
             {% csrf_token %}
             {% for field in form %}
                 {% if "Content" in field.label_tag %}
+                    <div id="tarot-images-edit-area">
+                        <p>TAROTs HERE!</p>
+                        {% include "records/includes/tarot_images_edit.html" %}
+                    </div>
                     <div class="form-row record-input {% if field.errors %}error-message{% endif %}">
                         {{ field }}
                         {{ field.errors }}

@@ -14,4 +14,6 @@ urlpatterns = [
     path("records/<int:record_id>", login_required(views.RecordDetailView.as_view(), login_url="login"), name="record-detail"),
     path("delete-label/<str:label_name>", login_required(views.DeleteLabelView.as_view(), login_url="login"), name="delete-label"),
     path("delete-record/<int:record_id>", login_required(views.DeleteRecordView.as_view(), login_url="login"), name="delete-record"),
+    # AJAX
+    path("label-info/<str:label_name>", views.LabelAjaxView.as_view(), name="label-info-ajax")
 ]

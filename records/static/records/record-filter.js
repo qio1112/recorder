@@ -2,7 +2,7 @@ const INVALID_LABEL_NAME_CHARS = ['|', '=', '[', ']', '{', '}', ',', '\'', '\"']
 
 function appendNewSelectedLabel(labelName, createNew) {
     if (labelName) {
-        deleteElementById("label-selection-error")
+        deleteElementByID("label-selection-error")
         let labelsSelectedArea = document.getElementById("labels-selected-area")
         let newLabelSelectedDivId = "selected-" + labelName
         let errorMessage = ""
@@ -24,13 +24,16 @@ function appendNewSelectedLabel(labelName, createNew) {
             document.getElementById("filter-label-selections").appendChild(errorP)
             return
         } else {
-            deleteElementById("label-selection-error")
+            deleteElementByID("label-selection-error")
         }
         let labelSelectedDiv = document.createElement("div")
         if (EXISTING_LABELS.includes(labelName)) {
             labelSelectedDiv.classList.add("label-selected")
             if (TAROT_LABELS.includes(labelName)) {
                 labelSelectedDiv.classList.add("label-selected-tarot")
+                if (typeof LABEL_AJAX_URL !== 'undefined') {
+                    appendTarotImageByLabel(labelName)
+                }
             }
         }
         else {
@@ -43,7 +46,7 @@ function appendNewSelectedLabel(labelName, createNew) {
         labelDeleteButton.classList.add("delete-selected-label")
         labelDeleteButton.href = "#"
         labelDeleteButton.onclick = function() {
-            deleteElementById(newLabelSelectedDivId)
+            deleteSelectedLabel(labelName)
         }
         labelSelectedDiv.insertAdjacentElement("beforeend", labelNameDiv)
         labelSelectedDiv.insertAdjacentElement("beforeend", labelDeleteButton)
@@ -51,10 +54,44 @@ function appendNewSelectedLabel(labelName, createNew) {
     }
 }
 
-function deleteElementById(id) {
+function appendTarotImageByLabel(labelName) {
+    callAjax(LABEL_AJAX_URL + labelName, function(request) {
+        console.log(JSON.parse(request.response))
+        let tarot_image_url = JSON.parse(request.response)['tarot_image_url']
+        if(tarot_image_url) {
+            let newTarotLiID = "tarot-image-wrapping-" + labelName
+            let tarotImageListDiv = document.getElementById('tarot-images')
+            let newTarotImageLi = document.createElement("li")
+            newTarotImageLi.id = newTarotLiID
+            newTarotImageLi.classList.add("tarot-image-cell")
+            let newTarotImageNameP = document.createElement("p")
+            newTarotImageNameP.textContent = labelName
+            let newTarotImg = document.createElement("img")
+            newTarotImg.src = tarot_image_url
+            newTarotImg.classList.add("tarot-image")
+            if(labelName.endsWith('_R')) {
+                newTarotImg.classList.add('tarot-image-reversed')
+            }
+            newTarotImageLi.insertAdjacentElement("beforeend", newTarotImageNameP)
+            newTarotImageLi.insertAdjacentElement("beforeend", newTarotImg)
+            tarotImageListDiv.appendChild(newTarotImageLi)
+        }
+    }, 'GET', {})
+}
+
+function deleteElementByID(id) {
     let element = document.getElementById(id)
     if (element) {
         element.parentElement.removeChild(element)
+    }
+}
+
+function deleteSelectedLabel(labelName) {
+    let selectedLabelDivID = "selected-" + labelName
+    deleteElementByID(selectedLabelDivID)
+    if(TAROT_LABELS.includes(labelName)) {
+        let selectedTarotImageLiID = "tarot-image-wrapping-" + labelName
+        deleteElementByID(selectedTarotImageLiID)
     }
 }
 
@@ -102,6 +139,7 @@ function getSelectedLabels() {
 }
 
 function callAjax(url, callback, method, formData){
+    console.log("Ajax call to " + url + " method " + method)
     let request = new XMLHttpRequest();
     request.onreadystatechange = function(){
         if (request.readyState == 4 && request.status == 200){
@@ -120,10 +158,4 @@ function submitAddRecordForm(url) {
     callAjax(url, function(request) {
         window.location.replace(request.responseURL)
     }, 'POST', addRecordForm)
-}
-
-
-
-function submitEditRecordForm(url) {
-
 }

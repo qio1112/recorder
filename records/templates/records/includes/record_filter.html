@@ -9,7 +9,7 @@
                     {% for selected_label in selected_labels %}
                         <div class="label-selected {% if selected_label.type == 'TAROT' %}label-selected-tarot{% endif %}" id="selected-{{ selected_label.name }}">
                             <div>{{ selected_label.name }}</div>
-                            <a class="delete-selected-label" href="#" onclick="deleteElementById('selected-{{ selected_label.name }}')"></a>
+                            <a class="delete-selected-label" href="#" onclick="deleteElementByID('selected-{{ selected_label.name }}')"></a>
                         </div>
                     {% endfor %}
                 </div>

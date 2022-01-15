@@ -31,12 +31,6 @@
             <div class="{% if can_edit %} button-1 {% else %} button-disabled {% endif %}">
                 <a href={% url 'delete-record' record.id %}>DELETE Record</a>
             </div>
-
-{#            <form action="{% url "delete-record" %}" method="POST">#}
-{#                {% csrf_token %}#}
-{#                <input type="hidden" value="{{ record.id }}" name="record_id">#}
-{#                <button class="button-1" type="submit">Delete Record</button>#}
-{#            </form>#}
         </div>
         {% include "records/includes/tarot_images.html" %}
         <article class="record-detail-content">{{ record.content }}</article>
