@@ -72,10 +72,12 @@ class EditRecordView(View):
                                           'create_new_labels': True,
                                           'content': record.content
                                           })
+
         return render(request, 'records/add_edit_record.html', {'form': record_form,
                                                                 'title': 'Edit Record',
                                                                 'existing_labels': existing_labels_names,
                                                                 'tarot_labels': tarot_label_names,
+                                                                'used_tarot_card_labels': record.get_tarot_cards_ordered(),
                                                                 'used_labels': used_labels,
                                                                 'record_id': record.id})
 

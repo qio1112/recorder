@@ -1,13 +1,13 @@
 <div id="tarot-images-area">
     <ul id="tarot-images">
-{#        {% for tarot_label in used_labels %}#}
-{#            {% if tarot_label.is_tarot_card %}#}
-{#                <li id="tarot-image-wrapping-{{ tarot_label.name }}" class="tarot-image-cell">#}
-{#                    <p>{{ tarot_label }}</p>#}
-{#                    <img src="{{ tarot_label.get_tarot_image }}"#}
-{#                         class="tarot-image {% if tarot_label.is_revered_tarot_card %}tarot-image-reversed{% endif %}"/>#}
-{#                </li>#}
-{#            {% endif %}#}
-{#        {% endfor %}#}
+        {% for tarot_label in used_tarot_card_labels %}
+            {% if tarot_label.is_tarot_card %}
+                <li id="tarot-image-wrapping-{{ tarot_label.name }}" class="tarot-image-cell">
+                    <p>{{ tarot_label }}</p>
+                    <img src="{{ tarot_label.get_tarot_image }}"
+                         class="tarot-image {% if tarot_label.is_revered_tarot_card %}tarot-image-reversed{% endif %}"/>
+                </li>
+            {% endif %}
+        {% endfor %}
     </ul>
 </div>

@@ -37,7 +37,6 @@
             {% for field in form %}
                 {% if "Content" in field.label_tag %}
                     <div id="tarot-images-edit-area">
-                        <p>TAROTs HERE!</p>
                         {% include "records/includes/tarot_images_edit.html" %}
                     </div>
                     <div class="form-row record-input {% if field.errors %}error-message{% endif %}">
