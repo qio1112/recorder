@@ -63,6 +63,8 @@
                     {% endif %}
                 {% elif "Labels" in field.label_tag %}
                     {% include "records/includes/record_edit_label_filter.html" %}
+                {% elif "Metadata" in field.label_tag %}
+
                 {% else %}
                     <div class="form-row record-input {% if field.errors %}error-message{% endif %}">
                         {{ field.label_tag }}
