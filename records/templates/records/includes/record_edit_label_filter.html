@@ -7,7 +7,7 @@
                     {% for used_label in used_labels %}
                         <div class="label-selected {% if used_label.type == 'TAROT' %}label-selected-tarot{% endif %}" id="selected-{{ used_label.name }}">
                             <div>{{ used_label.name }}</div>
-                            <a class="delete-selected-label" href="#" onclick="deleteSelectedLabel({{ used_label.name }})"></a>
+                            <a class="delete-selected-label" href="#" onclick="deleteSelectedLabel('{{ used_label.name }}')"></a>
                         </div>
                     {% endfor %}
                 </div>
@@ -20,7 +20,7 @@
                                 <option value="{{ label_name }}">{{ label_name }}</option>
                             {% endfor %}
                         </select>
-                        <div class="filter-button"><a onclick="addSelectedLabelByOption({{ label_name }})">Add</a></div>
+                        <div class="filter-button"><a onclick="addSelectedLabelByOption()">Add</a></div>
                     </div>
                     <div class="filter-select" id="select-label-by-text">
                         <label>Add Label</label>

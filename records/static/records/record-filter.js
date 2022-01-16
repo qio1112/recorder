@@ -64,6 +64,8 @@ function appendTarotImageByLabel(labelName) {
             let newTarotImageLi = document.createElement("li")
             newTarotImageLi.id = newTarotLiID
             newTarotImageLi.classList.add("tarot-image-cell")
+            newTarotImageLi.classList.add("draggable")
+            newTarotImageLi.draggable = true
             let newTarotImageNameP = document.createElement("p")
             newTarotImageNameP.textContent = labelName
             let newTarotImg = document.createElement("img")
@@ -74,6 +76,7 @@ function appendTarotImageByLabel(labelName) {
             }
             newTarotImageLi.insertAdjacentElement("beforeend", newTarotImageNameP)
             newTarotImageLi.insertAdjacentElement("beforeend", newTarotImg)
+            addListenersToDraggable(newTarotImageLi)
             tarotImageListDiv.appendChild(newTarotImageLi)
         }
     }, 'GET', {})
