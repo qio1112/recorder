@@ -158,7 +158,21 @@ function submitAddRecordForm(url) {
     let addRecordForm = new FormData(document.getElementById("add-edit-record-form"))
     let selectedLabelNames = getSelectedLabels()
     addRecordForm.set("labels", JSON.stringify(selectedLabelNames))
+    addRecordForm.set("metadata", JSON.stringify({"tarot_card_order": getTarotImageList()}))
     callAjax(url, function(request) {
         window.location.replace(request.responseURL)
     }, 'POST', addRecordForm)
+}
+
+function getTarotImageList() {
+    let tarotImagesUl = document.getElementById("tarot-images")
+    let tarotOrder = []
+    if (tarotImagesUl) {
+        let tarotImages = tarotImagesUl.children
+        for (let i = 0; i < tarotImages.length; i ++) {
+            let tarotImageLi = tarotImages[i]
+            tarotOrder.push(tarotImageLi.querySelector('p').textContent)
+        }
+    }
+    return tarotOrder
 }

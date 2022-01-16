@@ -123,6 +123,10 @@ class Record(models.Model):
             print(f"Invalid tarot order in metadata: {e}")
             return tarot_cards
 
+    # TODO - update this method when more metadata added
+    def update_metadata(self, new_meta):
+        self.metadata = new_meta
+
 
 class Picture(models.Model):
     picture = models.ImageField(upload_to='pictures')

@@ -70,7 +70,7 @@ class EditRecordView(View):
                                           'is_public': record.is_public,
                                           'labels': '',
                                           'create_new_labels': True,
-                                          'content': record.content
+                                          'content': record.content,
                                           })
 
         return render(request, 'records/add_edit_record.html', {'form': record_form,
@@ -102,6 +102,7 @@ class EditRecordView(View):
             record.title = record_form.cleaned_data['title']
             record.is_public = record_form.cleaned_data['is_public']
             record.content = record_form.cleaned_data['content']
+            record.update_metadata(record_form.cleaned_data['metadata'])
 
             delete_image_ids = record_form.cleaned_data['delete_images']
             for delete_image_id in delete_image_ids:
@@ -143,7 +144,8 @@ class AddRecordView(View):
             user = request.user.shown_user.get()
             new_record = Record.objects.create(title=new_record_form.cleaned_data['title'],
                                                content=new_record_form.cleaned_data['content'],
-                                               created_by=user)
+                                               created_by=user,
+                                               metadata=new_record_form.cleaned_data['metadata'])
 
             for label in Label.objects.filter(name__in=all_labels):
                 new_record.labels.add(label)

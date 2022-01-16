@@ -21,6 +21,7 @@ class RecordForm(forms.Form):
     images = forms.ImageField(widget=forms.FileInput(attrs={'multiple': True}), required=False)
     delete_images = forms.MultipleChoiceField(required=False,
                                               widget=forms.CheckboxSelectMultiple)
+    metadata = forms.CharField(empty_value="", required=False, max_length=5000)
 
     def __init__(self, delete_images=[], *args, **kwargs):
         super(RecordForm, self).__init__(*args, **kwargs)
