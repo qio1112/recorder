@@ -1,4 +1,5 @@
 const INVALID_LABEL_NAME_CHARS = ['|', '=', '[', ']', '{', '}', ',', '\'', '\"']
+const INVALID_LABEL_NAMES = ['NULL']
 
 function appendNewSelectedLabel(labelName, createNew) {
     if (labelName) {
@@ -110,16 +111,28 @@ function addSelectedLabelByOption() {
     appendNewSelectedLabel(labelName, false)
 }
 
-function addSelectedLabelByText() {
+function addSelectedLabelByText(create_new) {
     let labelName = document.getElementById("select-label-text").value
-    document.getElementById("select-label-text").value = ""
-    appendNewSelectedLabel(labelName, false)
-}
-
-function addSelectedLabelByTextForNewRecord() {
-    let labelName = document.getElementById("select-label-text").value
-    document.getElementById("select-label-text").value = ""
-    appendNewSelectedLabel(labelName, true)
+    if (labelName && !EXISTING_LABELS.includes(labelName)) {
+        // update EXISTING_LABELS by AJAX
+        callAjax(LABEL_AJAX_URL + labelName, function(request) {
+            console.log(JSON.parse(request.response))
+            let label_info = JSON.parse(request.response)
+            if (label_info) {
+                if (label_info["label_name"]) {
+                    EXISTING_LABELS.push(label_info["label_name"])
+                    if (label_info["type"] === "TAROT") {
+                        TAROT_LABELS.push(label_info["type"])
+                    }
+                }
+            }
+            document.getElementById("select-label-text").value = ""
+            appendNewSelectedLabel(labelName, create_new)
+        }, "GET", {})
+    } else if (labelName && EXISTING_LABELS.includes(labelName)) {
+        document.getElementById("select-label-text").value = ""
+        appendNewSelectedLabel(labelName, create_new)
+    }
 }
 
 function submitFilterForm(url) {
@@ -175,4 +188,49 @@ function getTarotImageList() {
         }
     }
     return tarotOrder
+}
+
+function searchLabelLike() {
+    let fragment = document.getElementById("label-like-filter-input").value
+    console.log("fragment: " + fragment)
+    if (!fragment) {
+        fragment = "NULL"
+    }
+    if (fragment) {
+        callAjax(LABEL_LIST_AJAX_URL + fragment, function(request) {
+            console.log(JSON.parse(request.response))
+            let labels_response = JSON.parse(request.response)['labels']
+            if (labels_response) {
+                let label_selection = document.getElementById("select-label-select")
+                removeAllChildNodes(label_selection)
+                let placeholderOption = document.createElement("option")
+                placeholderOption.disabled = true
+                placeholderOption.selected = true
+                placeholderOption.value = ""
+                placeholderOption.textContent = "Select Label"
+                label_selection.insertAdjacentElement("beforeend", placeholderOption)
+                for (let i = 0; i < labels_response.length; i ++) {
+                    let label = labels_response[i]
+                    // generate new select options
+                    let labelOption = document.createElement("option")
+                    labelOption.value = label["name"]
+                    labelOption.textContent = label["name"]
+                    label_selection.insertAdjacentElement("beforeend", labelOption)
+                    // update EXISTING_LABELS and TAROT_LABELS (and more) lists
+                    if (!EXISTING_LABELS.includes(label["name"])) {
+                        EXISTING_LABELS.push(label["name"])
+                    }
+                    if (label["type"] === "TAROT" && !TAROT_LABELS.includes(label["name"])) {
+                        TAROT_LABELS.push(label["name"])
+                    }
+                }
+            }
+        }, 'GET', {})
+    }
+}
+
+function removeAllChildNodes(parent) {
+    while (parent.firstChild) {
+        parent.removeChild(parent.firstChild);
+    }
 }

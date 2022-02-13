@@ -6,6 +6,7 @@ from django.shortcuts import render, redirect, reverse
 from django.views import View
 from django.views.generic import ListView
 from django.db.models import Q
+from django.db.models import Count
 import json
 
 import logging
@@ -59,10 +60,15 @@ class EditRecordView(View):
         account_user = request.user
         if not record.can_be_edited_by(account_user):
             return redirect(reverse('record-detail', args=[record_id]))
-        existing_labels = Label.objects.order_by('name').only('name').all()
+        # existing_labels = Label.objects.order_by('name').only('name').all()
+        existing_labels = Label.objects.annotate(num_records=Count('records')).order_by('num_records').all()[:100]
         existing_labels_names = [label.name for label in existing_labels]
-        tarot_labels = Label.objects.filter(type='TAROT').only('name').all()
-        tarot_label_names = [label.name for label in tarot_labels]
+        # tarot_labels = Label.objects.filter(type='TAROT').only('name').all()
+        # tarot_label_names = [label.name for label in tarot_labels]
+        tarot_label_names = []
+        for label in existing_labels:
+            if label.type == LABEL_TYPE_TAROT:
+                tarot_label_names.append(label.name)
         existing_images = record.pictures.all()
         used_labels = record.labels.order_by('type').all()
         record_form = RecordForm(delete_images=existing_images,
@@ -122,10 +128,14 @@ class EditRecordView(View):
 class AddRecordView(View):
 
     def get(self, request):
-        existing_labels = Label.objects.order_by('name').only('name').all()
-        existing_labels_names = [label.name for label in existing_labels]
-        tarot_labels = Label.objects.filter(type='TAROT').all()
-        tarot_label_names = [label.name for label in tarot_labels]
+        existing_labels = Label.objects.annotate(num_records=Count('records')).order_by('num_records').all()[:100]
+        existing_labels_names = sorted([label.name for label in existing_labels])
+        # tarot_labels = Label.objects.filter(type='TAROT').all()
+        # tarot_label_names = [label.name for label in tarot_labels]
+        tarot_label_names = []
+        for label in existing_labels:
+            if label.type == LABEL_TYPE_TAROT:
+                tarot_label_names.append(label.name)
         return render(request, 'records/add_edit_record.html', {'form': RecordForm(),
                                                                 'title': "Add New Record",
                                                                 'existing_labels': existing_labels_names,
@@ -329,7 +339,21 @@ class LabelAjaxView(View):
                 response["tarot_image_url"] = label.get_tarot_image()
             return JsonResponse(response, status="200", safe=False)
         else:
-            return JsonResponse({"error": f"Invalid label name: {label_name}"}, status="404")
+            return JsonResponse({}, status="200")
+
+
+class LabelListAjaxView(View):
+
+    def get(self, request, fragment):
+        if not fragment or "NULL" == fragment:
+            labels = Label.objects.annotate(num_records=Count('records')).order_by('num_records').all()[:100]
+        else:
+            labels = Label.objects.filter(name__contains=fragment).order_by('name').all()
+        response = {"labels": []}
+        for label in labels:
+            response['labels'].append({"name": label.name, "type": label.type})
+        return JsonResponse(response, status="200", safe=False)
+
 
 
 def add_labels_from_record_form(valid_record_form, title, request, add_current_date=True):

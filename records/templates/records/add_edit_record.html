@@ -13,10 +13,11 @@
 
 {% block js_scripts %}
     <script type="text/javascript">
-        const EXISTING_LABELS = {{existing_labels|safe}};
+        let EXISTING_LABELS = {{existing_labels|safe}};
         const CSRF_TOKEN = '{{ csrf_token }}';
-        const TAROT_LABELS = {{ tarot_labels|safe }};
+        let TAROT_LABELS = {{ tarot_labels|safe }};
         const LABEL_AJAX_URL = {% url "records-index-page" %} + "label-info/";
+        const LABEL_LIST_AJAX_URL = {% url "records-index-page" %} + "label-list/";
     </script>
     <script src="{% static "records/drag_manager.js" %}" defer></script>
     <script src="{% static "records/record-filter.js" %}"></script>
