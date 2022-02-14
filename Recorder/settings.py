@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'records',
     'practice',
     'user_auth',
+    'stock',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
