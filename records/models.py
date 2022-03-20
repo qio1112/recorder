@@ -2,11 +2,11 @@ from json import JSONDecodeError
 
 from django.core.exceptions import ValidationError
 from django.db import models
-from Recorder.utils import LABEL_TYPE_CHOICES, LABEL_TYPE_DATE
+from Recorder.recorder_utils import LABEL_TYPE_CHOICES, LABEL_TYPE_DATE
 from django.contrib.auth.models import User as AuthUser
 from django.db.models import Q
 from django.templatetags.static import static
-from Recorder.utils import PIPE, TAROT_NAMES, LABEL_TYPE_TAROT, reverse_tarot_name, \
+from Recorder.recorder_utils import PIPE, TAROT_NAMES, LABEL_TYPE_TAROT, reverse_tarot_name, \
     is_tarot_name, is_reversed_tarot_name
 import json
 

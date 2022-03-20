@@ -1,5 +1,5 @@
 from django import forms
-from Recorder.utils import get_current_date_str, LABEL_TYPE_CHOICES
+from Recorder.recorder_utils import get_current_date_str, LABEL_TYPE_CHOICES
 from .models import Label, Record, label_name_validator
 
 

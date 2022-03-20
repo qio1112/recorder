@@ -13,7 +13,7 @@ import logging
 
 from .models import Record, Label, User, Picture, get_valid_record_by_user
 from .forms import RecordFilterForm, LabelForm, RecordForm
-from Recorder.utils import get_current_date_str, PIPE, is_date, LABEL_TYPE_DEFAULT, LABEL_TYPE_DATE, is_tarot_name, \
+from Recorder.recorder_utils import get_current_date_str, PIPE, is_date, LABEL_TYPE_DEFAULT, LABEL_TYPE_DATE, is_tarot_name, \
     LABEL_TYPE_TAROT
 
 logger = logging.getLogger("records.view")

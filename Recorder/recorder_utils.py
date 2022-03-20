@@ -57,6 +57,8 @@ def is_date(date_str):
 
 
 def read_secret_keys():
+    import os
+    print(os.getcwd())
     property_file_path = 'Recorder/secrets.properties'
     if not exists(property_file_path):
         raise FileExistsError("Add file secrets.properties under /Recorder")
