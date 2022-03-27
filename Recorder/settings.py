@@ -25,7 +25,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', read_secret_keys()['SECRET_KEY'])
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('IA_DEBUG', True)
 
-ALLOWED_HOSTS = [os.getenv('ALLOWED_HOST'), 'localhost']
+ALLOWED_HOSTS = [os.getenv('ALLOWED_HOST'), 'localhost', '159.223.182.217']
 
 
 # Application definition
@@ -85,7 +85,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'mysql.connector.django',
         'OPTIONS': {
-            'read_default_file': './Recorder/mysql.cnf'
+            'read_default_file': str(BASE_DIR) + '/Recorder/mysql.cnf'
         }
     }
 }
