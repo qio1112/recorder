@@ -243,7 +243,7 @@ class DeleteRecordView(View):
 class LabelsView(ListView):
     template_name = 'records/all_labels.html'
     model = Label
-    ordering = ["name"]
+    ordering = ["type", "name"]
     paginate_by = 15
 
     def get_context_data(self, **kwargs):
