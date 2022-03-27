@@ -1,6 +1,7 @@
 from datetime import date, datetime, tzinfo
 from os.path import exists
 import pytz
+from pathlib import Path
 
 DATE_FORMAT = '%Y-%m-%d'
 TIMESTAMP_FORMAT = '%Y-%m-%d %H:%M:%s'
@@ -35,6 +36,8 @@ TAROT_NAMES = ('00_the_fool', '01_the_magician', '02_the_high_priestess', '03_th
                'wand_01', 'wand_02', 'wand_03', 'wand_04', 'wand_05', 'wand_06', 'wand_07', 'wand_08',
                'wand_09', 'wand_10', 'wand_11_page', 'wand_12_knight', 'wand_13_queen', 'wand_14_king')
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 
 def get_current_date_str():
     return get_current_time().strftime(DATE_FORMAT)
@@ -56,10 +59,15 @@ def is_date(date_str):
         return False
 
 
+def abs_path(relative_path: str):
+    if not relative_path.startswith('/'):
+        return str(BASE_DIR) + '/' + relative_path
+    else:
+        return relative_path
+
+
 def read_secret_keys():
-    import os
-    print(os.getcwd())
-    property_file_path = 'Recorder/secrets.properties'
+    property_file_path = abs_path('Recorder/secrets.properties')
     if not exists(property_file_path):
         raise FileExistsError("Add file secrets.properties under /Recorder")
     with open(property_file_path, 'r') as property_file:
@@ -70,12 +78,6 @@ def read_secret_keys():
             if EQUALS in line:
                 properties[line.split(EQUALS)[0]] = line.split(EQUALS)[1]
         return properties
-
-
-def get_tarot_image_path_by_name(tarot_name):
-    if tarot_name in TAROT_NAMES:
-        return 'Recorder/static/tarot/' + tarot_name + '.png'
-    return None
 
 
 def is_tarot_name(name):

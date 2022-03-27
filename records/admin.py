@@ -1,5 +1,5 @@
 from django.contrib import admin
-from.models import User, Label, Record, Picture
+from .models import User, Label, Record, Picture
 
 
 class LabelAdmin(admin.ModelAdmin):
