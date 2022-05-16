@@ -348,7 +348,7 @@ class LabelListAjaxView(View):
         if not fragment or "NULL" == fragment:
             labels = Label.objects.annotate(num_records=Count('records')).order_by('num_records').all()[:100]
         else:
-            labels = Label.objects.filter(name__contains=fragment).order_by('name').all()
+            labels = Label.objects.filter(name__icontains=fragment).order_by('name').all()
         response = {"labels": []}
         for label in labels:
             response['labels'].append({"name": label.name, "type": label.type})
