@@ -13,7 +13,7 @@ import logging
 
 from .models import Record, Label, User, Picture, get_valid_record_by_user
 from .forms import RecordFilterForm, LabelForm, RecordForm
-from Recorder.utils import get_current_date_str, PIPE, is_date, LABEL_TYPE_DEFAULT, LABEL_TYPE_DATE, is_tarot_name, \
+from Recorder.recorder_utils import get_current_date_str, PIPE, is_date, LABEL_TYPE_DEFAULT, LABEL_TYPE_DATE, is_tarot_name, \
     LABEL_TYPE_TAROT
 
 logger = logging.getLogger("records.view")
@@ -243,7 +243,7 @@ class DeleteRecordView(View):
 class LabelsView(ListView):
     template_name = 'records/all_labels.html'
     model = Label
-    ordering = ["name"]
+    ordering = ["type", "name"]
     paginate_by = 15
 
     def get_context_data(self, **kwargs):
@@ -348,7 +348,7 @@ class LabelListAjaxView(View):
         if not fragment or "NULL" == fragment:
             labels = Label.objects.annotate(num_records=Count('records')).order_by('num_records').all()[:10]
         else:
-            labels = Label.objects.filter(name__contains=fragment).order_by('name').all()
+            labels = Label.objects.filter(name__icontains=fragment).order_by('name').all()
         response = {"labels": []}
         for label in labels:
             response['labels'].append({"name": label.name, "type": label.type})

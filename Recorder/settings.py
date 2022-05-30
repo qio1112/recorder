@@ -11,11 +11,10 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os
 from pathlib import Path
-from .utils import read_secret_keys
+from .recorder_utils import read_secret_keys
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -26,7 +25,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', read_secret_keys()['SECRET_KEY'])
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('IA_DEBUG', True)
 
-ALLOWED_HOSTS = [os.getenv('ALLOWED_HOST'), 'localhost']
+ALLOWED_HOSTS = [os.getenv('ALLOWED_HOST'), 'www.baozhimen.com','baozhimen.com', '159.223.182.217']
 
 
 # Application definition
@@ -35,6 +34,7 @@ INSTALLED_APPS = [
     'records',
     'practice',
     'user_auth',
+    'stock',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -85,7 +85,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'mysql.connector.django',
         'OPTIONS': {
-            'read_default_file': './Recorder/mysql.cnf'
+            'read_default_file': str(BASE_DIR) + '/Recorder/mysql.cnf'
         }
     }
 }
