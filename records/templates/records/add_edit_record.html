@@ -62,6 +62,23 @@
                             {{ field.errors }}
                         </div>
                     {% endif %}
+                {% elif "Delete files" in field.label_tag %}
+                    {% if field.field.choices %}
+                        <div class="form-row record-input {% if field.errors %}error-message{% endif %}">
+                            {{ field.label_tag }}
+                            <ul>
+                                {% for file_id, file in field.field.choices %}
+                                    <li>
+                                        <input type="checkbox" name="delete_files" value="{{ file_id }}" id="{{ file.filename }}"/>
+                                        <label for="{{ file.filename }}">
+                                            <p>{{ file.filename }}</p>
+                                        </label>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                            {{ field.errors }}
+                        </div>
+                    {% endif %}
                 {% elif "Labels" in field.label_tag %}
                     {% include "records/includes/record_edit_label_filter.html" %}
                 {% elif "Metadata" in field.label_tag %}
@@ -70,6 +87,9 @@
                     <div class="form-row record-input {% if field.errors %}error-message{% endif %}">
                         {{ field.label_tag }}
                         {{ field }}
+                        {% if "Images" in field.label_tag or "Files" in field.label_tag %}
+                            <p>File Cannot be larger then 10Mb</p>
+                        {% endif %}
                         {{ field.errors }}
                     </div>
                 {% endif %}

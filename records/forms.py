@@ -21,16 +21,27 @@ class RecordForm(forms.Form):
     images = forms.ImageField(widget=forms.FileInput(attrs={'multiple': True}), required=False)
     delete_images = forms.MultipleChoiceField(required=False,
                                               widget=forms.CheckboxSelectMultiple)
+    rec_files = forms.FileField(widget=forms.FileInput(attrs={'multiple': True}), required=False, label='Files')
+    delete_files = forms.MultipleChoiceField(required=False,
+                                              widget=forms.CheckboxSelectMultiple)
     metadata = forms.CharField(empty_value="", required=False, max_length=5000)
 
-    def __init__(self, delete_images=[], *args, **kwargs):
+    def __init__(self, delete_images=None, delete_files=None, *args, **kwargs):
         super(RecordForm, self).__init__(*args, **kwargs)
         # insert images related to the record if exist
+
         if delete_images:
-            choices = []
+            delete_image_choices = []
             for image in delete_images:
-                choices.append((image.id, image))
-            self.fields['delete_images'].choices = choices
+                delete_image_choices.append((image.id, image))
+            self.fields['delete_images'].choices = delete_image_choices
+
+        if delete_files:
+            delete_file_choices = []
+            for file in delete_files:
+                delete_file_choices.append((file.id, file))
+            self.fields['delete_files'].choices = delete_file_choices
+
 
 
 class RecordFilterForm(forms.Form):
