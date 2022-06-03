@@ -151,7 +151,7 @@ class Picture(models.Model):
         if filesize > 1024 * 1024 * 20:
             print("File cannot be larger then 20MB")
             raise ValidationError("The maximum file size that can be uploaded is 20MB")
-        super().save(self, force_insert, force_update, using, update_fields)
+        super().save(force_insert, force_update, using, update_fields)
 
 
 class RecFile(models.Model):
@@ -170,7 +170,7 @@ class RecFile(models.Model):
         if filesize > 1024 * 1024 * 20:
             print("File cannot be larger then 20MB")
             raise ValidationError("The maximum file size that can be uploaded is 20MB")
-        super().save(self, force_insert, force_update, using, update_fields)
+        super().save(force_insert, force_update, using, update_fields)
 
 
 # get records which the user has right to see
