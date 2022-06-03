@@ -146,8 +146,8 @@ class Picture(models.Model):
         return f'{self.picture.name} in {self.record.title}'
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        filesize = self.file.size
-        print("file size: " + str(self.file.size))
+        filesize = self.picture.size
+        print("file size: " + str(self.picture.size))
         if filesize > 1024 * 1024 * 20:
             print("File cannot be larger then 20MB")
             raise ValidationError("The maximum file size that can be uploaded is 20MB")
