@@ -9,6 +9,7 @@ from django.templatetags.static import static
 from Recorder.recorder_utils import PIPE, TAROT_NAMES, LABEL_TYPE_TAROT, reverse_tarot_name, \
     is_tarot_name, is_reversed_tarot_name
 import json
+import os
 
 
 class User(models.Model):
@@ -104,7 +105,6 @@ class Record(models.Model):
         tarot_name_label_dict = dict(zip([tarot_label.name for tarot_label in tarot_cards], tarot_cards))
         try:
             if self.metadata:
-                print(f'metadata: {self.metadata}')
                 metadata = json.loads(self.metadata)
                 tarot_card_order = metadata['tarot_card_order']
                 ordered = []
@@ -128,12 +128,49 @@ class Record(models.Model):
         self.metadata = new_meta
 
 
+def validate_file_size(rec_file):
+    filesize = rec_file.file.size
+    print("file size: " + str(rec_file.size))
+    if filesize > 1024 * 1024 * 10:
+        print("File cannot be larger then 20MB")
+        raise ValidationError("The maximum file size that can be uploaded is 20MB")
+    else:
+        return rec_file
+
+
 class Picture(models.Model):
     picture = models.ImageField(upload_to='pictures')
     record = models.ForeignKey(Record, on_delete=models.CASCADE, related_name='pictures')
 
     def __str__(self):
         return f'{self.picture.name} in {self.record.title}'
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        filesize = self.file.size
+        print("file size: " + str(self.file.size))
+        if filesize > 1024 * 1024 * 20:
+            print("File cannot be larger then 20MB")
+            raise ValidationError("The maximum file size that can be uploaded is 20MB")
+        super().save(self, force_insert, force_update, using, update_fields)
+
+
+class RecFile(models.Model):
+    file = models.FileField(upload_to='files')
+    record = models.ForeignKey(Record, on_delete=models.CASCADE, related_name='files')
+
+    def __str__(self):
+        return f'{self.file.name} in {self.record.title} {self.file.size}'
+
+    def filename(self):
+        return os.path.basename(self.file.name)
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        filesize = self.file.size
+        print("file size: " + str(self.file.size))
+        if filesize > 1024 * 1024 * 20:
+            print("File cannot be larger then 20MB")
+            raise ValidationError("The maximum file size that can be uploaded is 20MB")
+        super().save(self, force_insert, force_update, using, update_fields)
 
 
 # get records which the user has right to see

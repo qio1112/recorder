@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, Label, Record, Picture
+from .models import User, Label, Record, Picture, RecFile
 
 
 class LabelAdmin(admin.ModelAdmin):
@@ -23,3 +23,4 @@ admin.site.register(User)
 admin.site.register(Label, LabelAdmin)
 admin.site.register(Record, RecordAdmin)
 admin.site.register(Picture)
+admin.site.register(RecFile)

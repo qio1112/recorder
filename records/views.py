@@ -11,7 +11,7 @@ import json
 
 import logging
 
-from .models import Record, Label, User, Picture, get_valid_record_by_user
+from .models import Record, Label, User, Picture, RecFile,  get_valid_record_by_user
 from .forms import RecordFilterForm, LabelForm, RecordForm
 from Recorder.recorder_utils import get_current_date_str, PIPE, is_date, LABEL_TYPE_DEFAULT, LABEL_TYPE_DATE, is_tarot_name, \
     LABEL_TYPE_TAROT
@@ -61,7 +61,7 @@ class EditRecordView(View):
         if not record.can_be_edited_by(account_user):
             return redirect(reverse('record-detail', args=[record_id]))
         # existing_labels = Label.objects.order_by('name').only('name').all()
-        existing_labels = Label.objects.annotate(num_records=Count('records')).order_by('num_records').all()[:100]
+        existing_labels = Label.objects.annotate(num_records=Count('records')).order_by('num_records').all()[:10]
         existing_labels_names = [label.name for label in existing_labels]
         # tarot_labels = Label.objects.filter(type='TAROT').only('name').all()
         # tarot_label_names = [label.name for label in tarot_labels]
@@ -70,8 +70,10 @@ class EditRecordView(View):
             if label.type == LABEL_TYPE_TAROT:
                 tarot_label_names.append(label.name)
         existing_images = record.pictures.all()
+        existing_files = record.files.all()
         used_labels = record.labels.order_by('type').all()
         record_form = RecordForm(delete_images=existing_images,
+                                 delete_files=existing_files,
                                  initial={'title': record.title,
                                           'is_public': record.is_public,
                                           'labels': '',
@@ -95,7 +97,7 @@ class EditRecordView(View):
         if not record.can_be_edited_by(account_user):
             return redirect(reverse('record-detail', args=[record_id]))
 
-        record_form = RecordForm(record.pictures.all(), request.POST, request.FILES)
+        record_form = RecordForm(record.pictures.all(), record.files.all(), request.POST, request.FILES)
         if record_form.is_valid():
             result = add_labels_from_record_form(record_form, "Add New Record", request, add_current_date=False)
             if not result['valid']:
@@ -114,11 +116,19 @@ class EditRecordView(View):
             for delete_image_id in delete_image_ids:
                 Picture.objects.get(pk=delete_image_id).delete()
 
-            # images
+            delete_file_ids = record_form.cleaned_data['delete_files']
+            for delete_file_id in delete_file_ids:
+                RecFile.objects.get(pk=delete_file_id).delete()
+
             images = request.FILES.getlist('images')
             if images:
                 for image in images:
                     Picture.objects.create(picture=image, record=record)
+
+            files = request.FILES.getlist('rec_files')
+            if files:
+                for file in files:
+                    RecFile.objects.create(file=file, record=record)
 
             record.save()
         return redirect(reverse('record-detail', args=[record.id]))
@@ -128,7 +138,7 @@ class EditRecordView(View):
 class AddRecordView(View):
 
     def get(self, request):
-        existing_labels = Label.objects.annotate(num_records=Count('records')).order_by('num_records').all()[:100]
+        existing_labels = Label.objects.annotate(num_records=Count('records')).order_by('num_records').all()[:10]
         existing_labels_names = sorted([label.name for label in existing_labels])
         # tarot_labels = Label.objects.filter(type='TAROT').all()
         # tarot_label_names = [label.name for label in tarot_labels]
@@ -144,7 +154,7 @@ class AddRecordView(View):
                                                                 })
 
     def post(self, request, *args, **kwargs):
-        new_record_form = RecordForm([], request.POST, request.FILES)
+        new_record_form = RecordForm([], [], request.POST, request.FILES)
         if new_record_form.is_valid():
             # labels
             result = add_labels_from_record_form(new_record_form, "Add New Record", request)
@@ -165,6 +175,11 @@ class AddRecordView(View):
             if images:
                 for image in images:
                     Picture.objects.create(picture=image, record=new_record)
+
+            files = request.FILES.getlist('rec_files')
+            if files:
+                for file in files:
+                    RecFile.objects.create(file=file, record=new_record)
 
             new_record.save()
             return redirect(reverse('record-detail', args=[new_record.id]))
@@ -346,7 +361,7 @@ class LabelListAjaxView(View):
 
     def get(self, request, fragment):
         if not fragment or "NULL" == fragment:
-            labels = Label.objects.annotate(num_records=Count('records')).order_by('num_records').all()[:100]
+            labels = Label.objects.annotate(num_records=Count('records')).order_by('num_records').all()[:10]
         else:
             labels = Label.objects.filter(name__icontains=fragment).order_by('name').all()
         response = {"labels": []}
