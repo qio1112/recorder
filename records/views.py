@@ -61,7 +61,7 @@ class EditRecordView(View):
         if not record.can_be_edited_by(account_user):
             return redirect(reverse('record-detail', args=[record_id]))
         # existing_labels = Label.objects.order_by('name').only('name').all()
-        existing_labels = Label.objects.annotate(num_records=Count('records')).order_by('num_records').all()[:10]
+        existing_labels = Label.objects.annotate(num_records=Count('records')).order_by('num_records').all()[:100]
         existing_labels_names = [label.name for label in existing_labels]
         # tarot_labels = Label.objects.filter(type='TAROT').only('name').all()
         # tarot_label_names = [label.name for label in tarot_labels]
@@ -138,7 +138,7 @@ class EditRecordView(View):
 class AddRecordView(View):
 
     def get(self, request):
-        existing_labels = Label.objects.annotate(num_records=Count('records')).order_by('num_records').all()[:10]
+        existing_labels = Label.objects.annotate(num_records=Count('records')).order_by('num_records').all()[:100]
         existing_labels_names = sorted([label.name for label in existing_labels])
         # tarot_labels = Label.objects.filter(type='TAROT').all()
         # tarot_label_names = [label.name for label in tarot_labels]
@@ -361,7 +361,7 @@ class LabelListAjaxView(View):
 
     def get(self, request, fragment):
         if not fragment or "NULL" == fragment:
-            labels = Label.objects.annotate(num_records=Count('records')).order_by('num_records').all()[:10]
+            labels = Label.objects.annotate(num_records=Count('records')).order_by('num_records').all()[:100]
         else:
             labels = Label.objects.filter(name__icontains=fragment).order_by('name').all()
         response = {"labels": []}
