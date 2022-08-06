@@ -292,6 +292,8 @@ class RecordsView(ListView):
     def get_queryset(self):
         labels_query = self.request.GET.get('labels', '')
         selected_label_names = self.filter_selected_label_names()
+        selected_record_name_fraction = self.request.GET.get('record-title', '')
+
         # order = self.request.GET.get('orderby', 'give-default-value')
         new_context = get_valid_record_by_user(self.request.user)
         if selected_label_names:
@@ -299,6 +301,10 @@ class RecordsView(ListView):
                 new_context = new_context.filter(
                     labels__name__exact=label_name,
                 )
+        if selected_record_name_fraction:
+            new_context = new_context.filter(
+                title__icontains=selected_record_name_fraction
+            )
         return new_context.order_by("last_modified_date", "title")
 
     # def post(self, request, *args, **kwargs):
@@ -322,11 +328,13 @@ class RecordsView(ListView):
         tarot_label_names = [label.name for label in tarot_labels]
         selected_label_names = self.filter_selected_label_names()
         selected_labels = []
+        selected_record_title_fraction = self.request.GET.get('record-title', '')
         if selected_label_names:
             selected_labels = Label.objects.filter(name__in=selected_label_names).all()
         context['labels'] = label_names
         context['selected_labels'] = selected_labels
         context['tarot_labels'] = tarot_label_names
+        context['selected_record_title_fraction'] = selected_record_title_fraction
         return context
 
 
