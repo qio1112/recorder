@@ -46,6 +46,7 @@ class RecordForm(forms.Form):
 
 class RecordFilterForm(forms.Form):
     labels = forms.CharField(required=False)
+    record_title = forms.CharField(required=False)
     # author = forms.CharField(max_length=100)  # username of author
 
 

@@ -137,7 +137,8 @@ function addSelectedLabelByText(create_new) {
 
 function submitFilterForm(url) {
     let selectedLabelNames = getSelectedLabels()
-    const query = "?labels=" + JSON.stringify(selectedLabelNames)
+    let selectedRecordTitleFraction = document.getElementById("select-record-title").value;
+    const query = "?labels=" + JSON.stringify(selectedLabelNames) + "&record-title=" + selectedRecordTitleFraction
     const filter_url = url + query
     window.location.replace(filter_url)
 }
