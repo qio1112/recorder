@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY', read_secret_keys()['SECRET_KEY'])
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('IA_DEBUG', False)
+DEBUG = os.getenv('IA_DEBUG', True)
 
 ALLOWED_HOSTS = [os.getenv('ALLOWED_HOST'), 'www.baozhimen.com','baozhimen.com', '159.223.182.217', 'localhost']
 
@@ -152,3 +152,11 @@ MEDIA_URL = "/files/"
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Email
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = read_secret_keys()['EMAIL_HOST']
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = read_secret_keys()['EMAIL_HOST_USER']
+EMAIL_HOST_PASSWORD = read_secret_keys()['EMAIL_HOST_PASSWORD']

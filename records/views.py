@@ -7,6 +7,7 @@ from django.views import View
 from django.views.generic import ListView
 from django.db.models import Q
 from django.db.models import Count
+from Recorder.email_utils import send_email_new_record
 import json
 
 import logging
@@ -182,6 +183,9 @@ class AddRecordView(View):
                     RecFile.objects.create(file=file, record=new_record)
 
             new_record.save()
+            # send email
+            send_email_new_record(user, new_record)
+
             return redirect(reverse('record-detail', args=[new_record.id]))
         else:
             print(f"Add Record POST: invalid form, {new_record_form.errors}")
@@ -376,7 +380,6 @@ class LabelListAjaxView(View):
         for label in labels:
             response['labels'].append({"name": label.name, "type": label.type})
         return JsonResponse(response, status="200", safe=False)
-
 
 
 def add_labels_from_record_form(valid_record_form, title, request, add_current_date=True):

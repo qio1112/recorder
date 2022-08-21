@@ -2,7 +2,7 @@ from json import JSONDecodeError
 
 from django.core.exceptions import ValidationError
 from django.db import models
-from Recorder.recorder_utils import LABEL_TYPE_CHOICES, LABEL_TYPE_DATE
+from Recorder.recorder_utils import LABEL_TYPE_CHOICES, LABEL_TYPE_DATE, LABEL_TYPE_DEFAULT
 from django.contrib.auth.models import User as AuthUser
 from django.db.models import Q
 from django.templatetags.static import static
@@ -17,6 +17,7 @@ class User(models.Model):
     icon = models.ImageField(upload_to='records', null=True)
     created_date = models.DateTimeField(auto_now_add=True, editable=False)
     account_user = models.ForeignKey(AuthUser, on_delete=models.CASCADE, null=True, related_name="shown_user")
+    email = models.EmailField(max_length=256, null=True)
 
     def __str__(self):
         return self.user_name
@@ -184,20 +185,26 @@ def get_valid_record_by_user(account_user):
         return Record.objects.filter(Q(created_by=shown_user) | Q(is_public=True))
 
 
-def preload_tarot_labels():
-    tarot_labels = []
+def preload_labels():
+    labels = []
     default_user = User.objects.get(user_name='Yipeng')
     for tarot_name in TAROT_NAMES:
         if not Label.objects.filter(pk=tarot_name).exists():
-            tarot_labels.append(Label(name=tarot_name,
-                                      type=LABEL_TYPE_TAROT,
-                                      editable=False,
-                                      created_by=default_user,
-                                      last_modified_by=default_user))
+            labels.append(Label(name=tarot_name,
+                                type=LABEL_TYPE_TAROT,
+                                editable=False,
+                                created_by=default_user,
+                                last_modified_by=default_user))
         if not Label.objects.filter(pk=reverse_tarot_name(tarot_name)).exists():
-            tarot_labels.append(Label(name=reverse_tarot_name(tarot_name),
-                                      type=LABEL_TYPE_TAROT,
-                                      editable=False,
-                                      created_by=default_user,
-                                      last_modified_by=default_user))
-    return Label.objects.bulk_create(tarot_labels)
+            labels.append(Label(name=reverse_tarot_name(tarot_name),
+                                type=LABEL_TYPE_TAROT,
+                                editable=False,
+                                created_by=default_user,
+                                last_modified_by=default_user))
+    # Alert
+    labels.append(Label(name='ALERT',
+                        type=LABEL_TYPE_DEFAULT,
+                        editable=False,
+                        created_by=default_user,
+                        last_modified_by=default_user))
+    return Label.objects.bulk_create(labels)
