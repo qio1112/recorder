@@ -1,11 +1,13 @@
-from datetime import date, datetime, tzinfo
+from datetime import date, datetime, tzinfo, timedelta
 from os.path import exists
 import pytz
 from pathlib import Path
+import time
 
 DATE_FORMAT = '%Y-%m-%d'
-TIMESTAMP_FORMAT = '%Y-%m-%d %H:%M:%s'
+TIMESTAMP_FORMAT = '%Y-%m-%d %H:%M:%S'
 TIME_ZONE = 'US/Eastern'
+TZ = pytz.timezone(TIME_ZONE)
 PLUS = '+'
 PIPE = '|'
 EQUALS = '='
@@ -48,8 +50,11 @@ def get_current_ts_str():
 
 
 def get_current_time():
-    return datetime.now(pytz.timezone(TIME_ZONE))
+    return datetime.now(TZ)
 
+
+def get_current_milli():
+    return round(time.time() * 1000)
 
 def is_date(date_str):
     try:
@@ -100,6 +105,24 @@ def reverse_tarot_name(name):
     return None
 
 
+def add_days_to_datetime(dt: datetime, days: int):
+    return dt + timedelta(days=days)
+
+
+def replace_datetime_to_nine(dt: datetime):
+    # return dt.replace(hour=9, minute=0, second=0, microsecond=0, tzinfo=pytz.timezone(TIME_ZONE))
+    return TZ.localize(dt.replace(hour=9, minute=0, second=0, microsecond=0))
+
+
+def read_datetime_from_ts(ts):
+    if ' ' in ts:
+        return TZ.localize(datetime.strptime(ts, TIMESTAMP_FORMAT))
+    else:
+        return TZ.localize(datetime.strptime(ts, DATE_FORMAT))
+
+
+def is_in_next_24h(dt: datetime):
+    return get_current_time() <= dt < (get_current_time() + timedelta(days=1))
 
 
 

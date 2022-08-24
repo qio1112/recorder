@@ -31,6 +31,7 @@ ALLOWED_HOSTS = [os.getenv('ALLOWED_HOST'), 'www.baozhimen.com','baozhimen.com',
 # Application definition
 
 INSTALLED_APPS = [
+    'django_celery_beat',
     'records',
     'practice',
     'user_auth',
@@ -160,3 +161,11 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = read_secret_keys()['EMAIL_HOST_USER']
 EMAIL_HOST_PASSWORD = read_secret_keys()['EMAIL_HOST_PASSWORD']
+
+# Celery settings
+CELERY_BROKER_URL = "redis://localhost:6379"
+CELERY_RESULT_BACKEND = "redis://localhost:6379"
+CELERY_TIMEZONE = 'US/Eastern'
+
+# Celery Beat Scheduler
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'

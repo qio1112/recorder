@@ -7,7 +7,7 @@ from django.views import View
 from django.views.generic import ListView
 from django.db.models import Q
 from django.db.models import Count
-from Recorder.email_utils import send_email_new_record
+from Recorder.task_utils import send_email_new_record
 import json
 
 import logging
@@ -184,7 +184,8 @@ class AddRecordView(View):
 
             new_record.save()
             # send email
-            send_email_new_record(user, new_record)
+            if user.email:
+                send_email_new_record(user.email, new_record)
 
             return redirect(reverse('record-detail', args=[new_record.id]))
         else:

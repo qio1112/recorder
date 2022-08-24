@@ -7,7 +7,8 @@ from django.contrib.auth.models import User as AuthUser
 from django.db.models import Q
 from django.templatetags.static import static
 from Recorder.recorder_utils import PIPE, TAROT_NAMES, LABEL_TYPE_TAROT, reverse_tarot_name, \
-    is_tarot_name, is_reversed_tarot_name
+    is_tarot_name, is_reversed_tarot_name, add_days_to_datetime, replace_datetime_to_nine, read_datetime_from_ts, \
+    is_in_next_24h
 import json
 import os
 
@@ -120,7 +121,7 @@ class Record(models.Model):
         except JSONDecodeError as e:
             print(f"Cannot parse metadata json: {e}")
             return tarot_cards
-        except ValueError:
+        except ValueError as e:
             print(f"Invalid tarot order in metadata: {e}")
             return tarot_cards
 
@@ -183,6 +184,33 @@ def get_valid_record_by_user(account_user):
     else:
         shown_user = account_user.shown_user.get()
         return Record.objects.filter(Q(created_by=shown_user) | Q(is_public=True))
+
+
+def get_alert_info():
+    alert_records = Record.objects.filter(labels__name__contains='ALERT').all()
+    alert_record_with_ts = []
+    if alert_records:
+        for alert_rec in alert_records:
+            try:
+                alert_time_info = alert_rec.content.split('\n')[0]
+                if alert_time_info:
+                    method, value = alert_time_info.split('=')
+                    method = method.strip()
+                    value = value.strip()
+                    if method and value:
+                        if method.lower() == 'alert at':
+                            dt = read_datetime_from_ts(value)
+                            if is_in_next_24h(dt):
+                                alert_record_with_ts.append((alert_rec, dt))
+                        elif method.lower() == 'alert after days':
+                            num_days_to_add = int(value)
+                            updated_datetime = replace_datetime_to_nine(add_days_to_datetime(alert_rec.created_date,
+                                                                                             num_days_to_add))
+                            if is_in_next_24h(updated_datetime):
+                                alert_record_with_ts.append((alert_rec, updated_datetime))
+            except ValueError:
+                pass
+    return alert_record_with_ts
 
 
 def preload_labels():
