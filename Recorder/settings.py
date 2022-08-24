@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY', read_secret_keys()['SECRET_KEY'])
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('IA_DEBUG', True)
+DEBUG = os.getenv('IA_DEBUG', False)
 
-ALLOWED_HOSTS = [os.getenv('ALLOWED_HOST'), 'www.baozhimen.com','baozhimen.com', '159.223.182.217', 'localhost']
+ALLOWED_HOSTS = [os.getenv('ALLOWED_HOST'), 'www.baozhimen.com','baozhimen.com', '159.223.182.217']
 
 
 # Application definition
