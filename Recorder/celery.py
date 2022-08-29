@@ -8,7 +8,7 @@ app.config_from_object("django.conf:settings", namespace="CELERY")
 app.conf.beat_schedule = {
     'schedule_record_alerts': {
         'task': 'schedule_record_alerts',
-        'schedule': crontab(hour='8'),
+        'schedule': crontab(hour='8', minute='0'),
     }
 }
 app.autodiscover_tasks()
