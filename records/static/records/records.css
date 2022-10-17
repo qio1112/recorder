@@ -105,6 +105,7 @@
   margin: 1rem;
   border-radius: 3px;
   text-decoration: None;
+  cursor: pointer;
 }
 
 .filter {
