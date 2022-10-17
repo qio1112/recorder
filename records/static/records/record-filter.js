@@ -235,3 +235,20 @@ function removeAllChildNodes(parent) {
         parent.removeChild(parent.firstChild);
     }
 }
+
+function redirectToPage(pageNum) {
+    let href = window.location.href;
+    let newQueries = [];
+    let url = href.split("?")[0]
+    if (href.includes("?")) {
+        let queries = href.split("?")[1].split("&");
+        queries.forEach(query => {
+            if (!query.startsWith("page=")) {
+                newQueries.push(query);
+            }
+        });
+    }
+    newQueries.push("page=" + pageNum);
+    let newQueryStr = "?" + newQueries.join("&");
+    window.location.href = url + newQueryStr;
+}
