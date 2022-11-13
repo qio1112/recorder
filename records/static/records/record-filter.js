@@ -93,10 +93,9 @@ function deleteElementByID(id) {
 function deleteSelectedLabel(labelName) {
     let selectedLabelDivID = "selected-" + labelName
     deleteElementByID(selectedLabelDivID)
-    if(TAROT_LABELS.includes(labelName)) {
-        let selectedTarotImageLiID = "tarot-image-wrapping-" + labelName
-        deleteElementByID(selectedTarotImageLiID)
-    }
+    // if it's a tarot card, delete the image as well
+    let selectedTarotImageLiID = "tarot-image-wrapping-" + labelName
+    deleteElementByID(selectedTarotImageLiID)
 }
 
 function elementContainsChildId(parentElement, childId) {

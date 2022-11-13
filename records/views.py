@@ -12,9 +12,10 @@ import json
 
 import logging
 
-from .models import Record, Label, User, Picture, RecFile,  get_valid_record_by_user
+from .models import Record, Label, User, Picture, RecFile, get_valid_record_by_user
 from .forms import RecordFilterForm, LabelForm, RecordForm
-from Recorder.recorder_utils import get_current_date_str, PIPE, is_date, LABEL_TYPE_DEFAULT, LABEL_TYPE_DATE, is_tarot_name, \
+from Recorder.recorder_utils import get_current_date_str, PIPE, is_date, LABEL_TYPE_DEFAULT, LABEL_TYPE_DATE, \
+    is_tarot_name, \
     LABEL_TYPE_TAROT
 
 logger = logging.getLogger("records.view")
@@ -51,7 +52,7 @@ class EditLabelView(View):
         pass
 
 
-# '/records/edit-record?record-id=<label-id>'
+# '/records/edit-record/<record-id>'
 class EditRecordView(View):
 
     def get(self, request, record_id):
@@ -135,7 +136,7 @@ class EditRecordView(View):
         return redirect(reverse('record-detail', args=[record.id]))
 
 
-# '/records/add-record'
+# '/records/add-record?copy-from=id'
 class AddRecordView(View):
 
     def get(self, request):
@@ -147,12 +148,37 @@ class AddRecordView(View):
         for label in existing_labels:
             if label.type == LABEL_TYPE_TAROT:
                 tarot_label_names.append(label.name)
-        return render(request, 'records/add_edit_record.html', {'form': RecordForm(),
-                                                                'title': "Add New Record",
-                                                                'existing_labels': existing_labels_names,
-                                                                'tarot_labels': tarot_label_names,
-                                                                'post_url': reverse('add-record')
-                                                                })
+
+        copy_from = request.GET.get('copy-from', None)
+        record_form = RecordForm()
+        # if copy from a record
+        used_tarot_card_labels = None
+        used_labels = None
+        if copy_from:
+            copy_from = int(copy_from)
+            copy_from_record = Record.objects.get(pk=copy_from)
+            account_user = request.user
+            if not copy_from_record or not copy_from_record.can_be_seen_by(account_user):
+                # user don't have access to see the record with this id
+                return redirect(reverse('add-record'))
+            used_tarot_card_labels = copy_from_record.get_tarot_cards_ordered()
+            used_labels = copy_from_record.labels.order_by('type').all()
+            record_form = RecordForm(initial={'title': 'Copy of ' + copy_from_record.title,
+                                              'is_public': True,
+                                              'labels': '',
+                                              'create_new_labels': True,
+                                              'content': copy_from_record.content
+                                              })
+
+        context = {'form': record_form,
+                   'title': "Add New Record",
+                   'existing_labels': existing_labels_names,
+                   'tarot_labels': tarot_label_names,
+                   'post_url': reverse('add-record'),
+                   'used_tarot_card_labels': used_tarot_card_labels,
+                   'used_labels': used_labels
+                   }
+        return render(request, 'records/add_edit_record.html', context)
 
     def post(self, request, *args, **kwargs):
         new_record_form = RecordForm([], [], request.POST, request.FILES)

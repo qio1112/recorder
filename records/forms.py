@@ -43,7 +43,6 @@ class RecordForm(forms.Form):
             self.fields['delete_files'].choices = delete_file_choices
 
 
-
 class RecordFilterForm(forms.Form):
     labels = forms.CharField(required=False)
     record_title = forms.CharField(required=False)

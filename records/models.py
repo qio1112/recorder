@@ -95,6 +95,9 @@ class Record(models.Model):
             shown_user = account_user.shown_user.get()
             return self.created_by.pk == shown_user.pk
 
+    def can_be_seen_by(self, account_user):
+        return self.is_public or account_user.shown_user.get().pk == self.created_by.pk
+
     def get_tarot_labels(self):
         return self.labels.filter(type=LABEL_TYPE_TAROT).all()
 
@@ -110,6 +113,8 @@ class Record(models.Model):
                 metadata = json.loads(self.metadata)
                 tarot_card_order = metadata['tarot_card_order']
                 ordered = []
+                if len(tarot_card_order) != len(tarot_cards):
+                    print("Tarot metadata has different length to taror card labels!!")
                 if tarot_card_order and len(tarot_card_order) == len(tarot_cards):
                     for tarot_card_in_order in tarot_card_order:
                         if not tarot_name_label_dict.get(tarot_card_in_order):

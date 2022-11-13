@@ -28,6 +28,9 @@
             <div class="{% if can_edit %} button-1 {% else %} button-disabled {% endif %}">
                 <a href={% url 'edit-record' record.id %}>Edit Record</a>
             </div>
+            <div class="button-1">
+                <a href="{% url 'add-record' %}?copy-from={{ record.id }}">Copy Record</a>
+            </div>
             <div class="{% if can_edit %} button-1 {% else %} button-disabled {% endif %}">
                 <a href={% url 'delete-record' record.id %}>DELETE Record</a>
             </div>
