@@ -306,7 +306,7 @@ class LabelsView(ListView):
 class RecordsView(ListView):
     template_name = 'records/all_records.html'
     model = Record
-    ordering = ["last_modified_date", "title"]
+    ordering = ["-last_modified_date"]
     paginate_by = 9
 
     def filter_selected_label_names(self):
@@ -336,7 +336,7 @@ class RecordsView(ListView):
             new_context = new_context.filter(
                 title__icontains=selected_record_name_fraction
             )
-        return new_context.order_by("last_modified_date", "title")
+        return new_context.order_by(*self.ordering)
 
     # def post(self, request, *args, **kwargs):
     #     record_filter_form = RecordFilterForm(request.POST)
