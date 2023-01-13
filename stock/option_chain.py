@@ -1,7 +1,7 @@
 import yfinance as yf
 import os
 from .stock_utils import zip_and_delete_source, get_today
-
+from Recorder.recorder_utils import read_secret_keys
 
 # get all existing option expiration dates for a symbol
 def get_option_expiration_dates(symbol: str):
@@ -79,3 +79,5 @@ def write_monitored_options_to_csv(output_dir: str, tickers_list: list[str], rev
     zip_and_delete_source(unzipped_dir, zipped_path, True)
 
 
+def get_option_chain_output_dir():
+    return read_secret_keys()['OPTION_CHAIN_OUTPUT_DIR']

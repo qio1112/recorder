@@ -9,6 +9,10 @@ app.conf.beat_schedule = {
     'schedule_record_alerts': {
         'task': 'schedule_record_alerts',
         'schedule': crontab(hour='8', minute='0'),
+    },
+    'schedule_download_option_chain': {
+        'task': 'schedule_download_option_chain',
+        'schedule': crontab(hour='20', minute='0')
     }
 }
 app.autodiscover_tasks()

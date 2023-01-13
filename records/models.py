@@ -1,14 +1,17 @@
 from json import JSONDecodeError
 
 from django.core.exceptions import ValidationError
+from django.core.files import File
 from django.db import models
 from Recorder.recorder_utils import LABEL_TYPE_CHOICES, LABEL_TYPE_DATE, LABEL_TYPE_DEFAULT
 from django.contrib.auth.models import User as AuthUser
 from django.db.models import Q
 from django.templatetags.static import static
+from django.conf import settings
 from Recorder.recorder_utils import PIPE, TAROT_NAMES, LABEL_TYPE_TAROT, reverse_tarot_name, \
     is_tarot_name, is_reversed_tarot_name, add_days_to_datetime, replace_datetime_to_nine, read_datetime_from_ts, \
-    is_in_next_24h
+    is_in_next_24h, read_secret_keys
+from stock.option_chain import get_option_chain_output_dir
 import json
 import os
 
@@ -218,9 +221,48 @@ def get_alert_info():
     return alert_record_with_ts
 
 
+def add_record_downloading_option_chain(date: str):
+    default_user = User.objects.get(user_name=read_secret_keys()['DEFAULT_USER'])
+    record_name = f"Option Chain {date}"
+    option_chain_label = 'OPTION_CHAIN'
+    content = f"Option Chain Data on {date} for {read_secret_keys()['OPTION_CHAIN_MONITORED_TICKERS']}"
+    if not Label.objects.filter(pk=option_chain_label).exists():
+        Label.objects.create(name=option_chain_label,
+                             type=LABEL_TYPE_DEFAULT,
+                             editable=False,
+                             created_by=default_user,
+                             last_modified_by=default_user)
+    if not Label.objects.filter(pk=date).exists():
+        Label.objects.create(name=date,
+                             type=LABEL_TYPE_DATE,
+                             editable=False,
+                             created_by=default_user,
+                             last_modified_by=default_user)
+    labels = [Label.objects.get(pk=option_chain_label), Label.objects.get(pk=date)]
+    new_record = Record.objects.create(title=record_name,
+                                       content=content,
+                                       created_by=default_user)
+    for label in labels:
+        new_record.labels.add(label)
+    new_record.save()
+
+    source_file_path = get_option_chain_output_dir() + "/" + date + "_option_chain.zip"
+    with open(source_file_path, 'rb') as source_file:
+        record_file = RecFile(record=new_record)
+        record_file.file = File(source_file)
+        record_file.save()
+
+    # record_file = RecFile(record=new_record)
+    # record_file.file.name = source_file_path
+    # record_file.save()
+
+    print(f"New Record for downloading option chain of {date} added!")
+    return new_record
+
+
 def preload_labels():
     labels = []
-    default_user = User.objects.get(user_name='Yipeng')
+    default_user = User.objects.get(user_name=read_secret_keys()['DEFAULT_USER'])
     for tarot_name in TAROT_NAMES:
         if not Label.objects.filter(pk=tarot_name).exists():
             labels.append(Label(name=tarot_name,

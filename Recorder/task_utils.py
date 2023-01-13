@@ -2,9 +2,11 @@ from django.conf import settings
 from django.core.mail import send_mail
 from celery import shared_task
 from django_celery_beat.models import PeriodicTask, ClockedSchedule
-from records.models import get_alert_info
+from records.models import get_alert_info, add_record_downloading_option_chain
 from datetime import datetime
-from Recorder.recorder_utils import get_current_milli
+from Recorder.recorder_utils import get_current_milli, read_secret_keys
+from stock.option_chain import write_monitored_options_to_csv, get_option_chain_output_dir
+from stock.stock_utils import is_trade_day, get_today
 import json
 
 
@@ -57,8 +59,30 @@ def schedule_alert_email(record, dt: datetime):
 #           'recipient_list': recipient_list}
 #       )
 
+
 @shared_task(name='schedule_record_alerts')
 def schedule_record_alerts():
     alert_info = get_alert_info()
     for record, ts in alert_info:
         schedule_alert_email(record, ts)
+
+
+@shared_task(name='schedule_download_option_chain')
+def schedule_download_option_chain(recipient: str):
+    today = get_today()
+    try:
+        if is_trade_day(today):
+            option_chain_output_dir = get_option_chain_output_dir()
+            monitored_tickers = read_secret_keys()['OPTION_CHAIN_MONITORED_TICKERS'].split(',')
+            print(f"Option Chain Output: {option_chain_output_dir}")
+            print(f"Monitored Option Chain Symbols: {monitored_tickers}")
+            if monitored_tickers:
+                write_monitored_options_to_csv(option_chain_output_dir, monitored_tickers, dry_run=False)
+                record = add_record_downloading_option_chain(today)
+                # send_email_new_record(recipient, record)
+    except Exception as e:
+        print('Error:', e)
+        send_email_task.delay('Writing option chain Failed', str(e), settings.EMAIL_HOST_USER, [recipient])
+        raise e
+
+
