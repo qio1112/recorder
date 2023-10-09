@@ -93,12 +93,13 @@
   box-shadow: 1px 1px 12px rgba(0, 0, 0, 0.4);
 }
 
-.pagination {
+.records-pagination {
+  margin: 0.3rem;
   align-items: center;
   text-align: center;
 }
 
-.pagination a {
+.records-pagination a {
   background-color: cadetblue;
   color: white;
   padding: 0.3rem;

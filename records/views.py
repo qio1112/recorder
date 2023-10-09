@@ -1,23 +1,23 @@
 from json import JSONDecodeError
 
 from django.http import JsonResponse
-from django.core import serializers
 from django.shortcuts import render, redirect, reverse
 from django.views import View
 from django.views.generic import ListView
-from django.db.models import Q
 from django.db.models import Count
 from Recorder.task_utils import send_email_new_record
 import json
 
 import logging
 
-from .models import Record, Label, User, Picture, RecFile,  get_valid_record_by_user
+from .models import Record, Label, Picture, RecFile,  get_valid_record_by_user
 from .forms import RecordFilterForm, LabelForm, RecordForm
-from Recorder.recorder_utils import get_current_date_str, PIPE, is_date, LABEL_TYPE_DEFAULT, LABEL_TYPE_DATE, is_tarot_name, \
-    LABEL_TYPE_TAROT
+from Recorder.recorder_utils import get_current_date_str, is_date, LABEL_TYPE_DEFAULT, LABEL_TYPE_DATE, LABEL_TYPE_TAROT, EXPENSES_LABEL
+
+from .expenses import ExpensesProcessor
 
 logger = logging.getLogger("records.view")
+logging.basicConfig(level=logging.INFO)
 
 
 # "/records"
@@ -328,8 +328,10 @@ class RecordsView(ListView):
         # context['filter'] = self.request.GET.get('filter', '')
         # context['orderby'] = self.request.GET.get('orderby', 'give-default-value')
         labels = Label.objects.order_by('name').only('name').all()
+        default_type_labels = Label.objects.filter(type=LABEL_TYPE_DEFAULT).order_by('name').only('name').all()
         tarot_labels = Label.objects.filter(type='TAROT').only('name').all()
         label_names = [label.name for label in labels]
+        default_type_labels_names = [label.name for label in default_type_labels]
         tarot_label_names = [label.name for label in tarot_labels]
         selected_label_names = self.filter_selected_label_names()
         selected_labels = []
@@ -337,6 +339,7 @@ class RecordsView(ListView):
         if selected_label_names:
             selected_labels = Label.objects.filter(name__in=selected_label_names).all()
         context['labels'] = label_names
+        context['default_type_labels'] = default_type_labels_names
         context['selected_labels'] = selected_labels
         context['tarot_labels'] = tarot_label_names
         context['selected_record_title_fraction'] = selected_record_title_fraction
@@ -350,7 +353,8 @@ class RecordDetailView(View):
             record = Record.objects.get(id=record_id)
             account_user = request.user
             can_edit = record.can_be_edited_by(account_user)
-            context = {'record': record, 'can_edit': can_edit}
+            has_expenses_label = record.labels.filter(name=EXPENSES_LABEL).exists()
+            context = {'record': record, 'can_edit': can_edit, 'has_expenses': has_expenses_label}
             return render(request, "records/record_detail.html", context)
         return redirect('records')
 
@@ -420,3 +424,62 @@ def add_labels_from_record_form(valid_record_form, title, request, add_current_d
                                  last_modified_by=user)
         all_labels.add(current_date)
     return {'valid': True, 'labels': all_labels}
+
+
+class ExpensesPageView(View):
+
+    def get(self, request, record_id):
+
+        record = Record.objects.get(id=record_id)
+        if record.labels.filter(name=EXPENSES_LABEL).exists() and record.files.exists():
+            expense_file = record.files.filter(file__endswith=".csv")
+            if expense_file.exists():
+                expenses_file = expense_file.first().file.path
+                try:
+                    processor = ExpensesProcessor(expenses_file)  # verify the file is valid inside the constructor
+                    response = {
+                        "title": "temp-title",
+                        "record_id": record_id,
+                        "page": 1
+                    }
+                    return render(request, 'records/expenses.html', response)
+                except AssertionError as e:
+                    logger.info(f"Invalid csv file in record. record_id: {record_id}")
+        logger.info(f"Request of expenses page without label {EXPENSES_LABEL} or no valid csv file. record_id: {record_id}")
+        return redirect(reverse('record-detail', args=[record_id]))
+
+
+class ExpensesTableAjax(View):
+
+    def get(self, request, record_id):
+        page = self.request.GET.get('page', '')
+        # page_size = self.request.GET.get('page_size', '')
+        ascending = self.request.GET.get('ascending', '')
+        query = self.request.GET.get('filter', '')
+        record = Record.objects.get(id=record_id)
+        if not page or not page.isdigit() or int(page) < 0:
+            page = 1
+        else:
+            page = int(page)
+        ascending = not ascending or ascending.s1.strip().lower() != "false"
+
+        if record.labels.filter(name=EXPENSES_LABEL).exists() and record.files.exists():
+            expense_file = record.files.filter(file__endswith=".csv")
+            if expense_file.exists():
+                expenses_file = expense_file.first().file.path
+                try:
+                    processor = ExpensesProcessor(expenses_file)
+                    data, columns, num_pages, actual_page = processor.query_from_str(query, page=page, ascending=ascending, to_format="json")
+                    response = {
+                        "title": "temp-title",
+                        "columns": columns,
+                        "data": data,
+                        "record_id": record_id,
+                        "num_pages": num_pages,
+                        "page": actual_page
+                    }
+                    return JsonResponse(response, status="200", safe=False)
+                except AssertionError as e:
+                    logger.info(f"Invalid csv file in record. record_id: {record_id}")
+        return JsonResponse({}, status="200")
+

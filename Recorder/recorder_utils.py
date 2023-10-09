@@ -19,6 +19,8 @@ LABEL_TYPE_CHOICES = ((LABEL_TYPE_DATE, LABEL_TYPE_DATE),
                       (LABEL_TYPE_TAROT, LABEL_TYPE_TAROT),
                       (LABEL_TYPE_DEFAULT, LABEL_TYPE_DEFAULT))
 
+EXPENSES_LABEL = 'Expenses'
+
 TAROT_NAMES = ('00_the_fool', '01_the_magician', '02_the_high_priestess', '03_the_empress', '04_the_emperor',
                '05_the_hierophant', '06_the_lovers', '07_the_chariot', '08_strength', '09_the_hermit',
                '10_wheel_of_fortune', '11_justice', '12_the_hanged_man', '13_death', '14_temperance',

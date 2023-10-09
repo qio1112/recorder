@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY', read_secret_keys()['SECRET_KEY'])
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('IA_DEBUG', False)
+DEBUG = os.getenv('IA_DEBUG', True)
 
-ALLOWED_HOSTS = [os.getenv('ALLOWED_HOST'), 'www.baozhimen.com','baozhimen.com', '159.223.182.217']
+ALLOWED_HOSTS = [os.getenv('ALLOWED_HOST'), 'www.baozhimen.com','baozhimen.com', '159.223.182.217', 'localhost']
 
 
 # Application definition
@@ -35,7 +35,6 @@ INSTALLED_APPS = [
     'records',
     'practice',
     'user_auth',
-    'stock',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

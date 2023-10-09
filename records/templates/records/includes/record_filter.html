@@ -18,7 +18,7 @@
                         <label>Select Label</label>
                         <select id="select-label-select">
                             <option value="" disabled selected>Select Label</option>
-                            {% for label_name in labels %}
+                            {% for label_name in default_type_labels %}
                                 <option value="{{ label_name }}">{{ label_name }}</option>
                             {% endfor %}
                         </select>

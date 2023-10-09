@@ -1,0 +1,37 @@
+#calendar-container {
+  font-family: Arial, sans-serif;
+}
+
+#calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#calendar {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+#calendar th, #calendar td {
+  text-align: center;
+  padding: 10px;
+}
+
+#calendar th {
+  background-color: #f0f0f0;
+}
+
+#calendar td {
+  cursor: pointer;
+}
+
+#calendar td:hover {
+  background-color: #e0e0e0;
+}
+
+#calendar td.selected {
+  background-color: #3498db;
+  color: #fff;
+}

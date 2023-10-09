@@ -36,7 +36,7 @@
         </ul>
     </div>
 
-    <div class="pagination">
+    <div class="records-pagination">
         {% if page_obj.has_previous %}
             <a onclick="redirectToPage(1)">&laquo; first</a>
             <a onclick="redirectToPage({{ page_obj.previous_page_number }})">previous</a>

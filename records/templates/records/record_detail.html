@@ -31,6 +31,9 @@
             <div class="{% if can_edit %} button-1 {% else %} button-disabled {% endif %}">
                 <a href={% url 'delete-record' record.id %}>DELETE Record</a>
             </div>
+            <div class="{% if has_expenses %} button-1 {% else %} button-disabled {% endif %}">
+                <a href={% url 'expenses' record.id %}>Expense</a>
+            </div>
         </div>
         {% include "records/includes/tarot_images.html" %}
         <article class="record-detail-content">{{ record.content }}</article>
